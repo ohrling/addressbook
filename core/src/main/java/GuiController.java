@@ -3,6 +3,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class GuiController {
     public TextField firstName;
@@ -12,7 +13,7 @@ public class GuiController {
     public TextField company;
     public ChoiceBox relationChoiceBox;
     public Button searchBtn;
-    public ListView addressBookListView;
+    public TableView<Contact> addressBookTableView = new TableView<>();
 
     private Alert searchAlert = new Alert(Alert.AlertType.NONE);
 
@@ -27,28 +28,15 @@ public class GuiController {
         }
         else {
             // TODO: 2019-11-04 Tillfälliga fält
-            int id = 0;
-            ObservableList<Contact> contacts = FXCollections.observableArrayList();
-            contacts.add(new Contact(id++, firstName.getText(), lastName.getText(), email.getText(), phoneNr.getText(), "test"));
-
-            addressBookListView = new ListView<>();
-            addressBookListView.setCellFactory(listview -> new ListCell<Contact>(){
-                @Override
-                protected void updateItem(Contact item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if(empty || item == null || item.getFirstName() == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getFirstName() + item.getLastName());
-                    }
-                }
-            });
-
-            addressBookListView.setItems(contacts);
-
-            addressBookListView.setVisible(true);
+            int id = 1;
+            ObservableList<Contact> contacts = FXCollections.observableArrayList(Contact.extractor());
+            addressBookTableView.setItems(contacts);
+            Contact contact = new Contact(id, firstName.getText(), lastName.getText(), email.getText(), phoneNr.getText(), "test");
+            contacts.add(contact);
+            contact.setLastName("Pettersson");
+            TableColumn<Contact,String> lastNameCol = new TableColumn<Contact,String>("Last Name");
+            lastNameCol.setCellValueFactory(new PropertyValueFactory("lastName"));
         }
-        addressBookListView.refresh();
+        addressBookTableView.refresh();
     }
 }
