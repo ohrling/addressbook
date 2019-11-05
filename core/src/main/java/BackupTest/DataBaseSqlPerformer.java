@@ -20,10 +20,9 @@ public class DataBaseSqlPerformer {
     //utför sql kommando
     public void performSqlStatment(String sqlStatement) {
 
-        //om det är ett deletestatement - sätt in anropad kontakt datan i backuptabellen
-        if (sqlStatement.toUpperCase().contains("DELETE")){
+        //om det är ett deletestatement - sätt in raderad kontakt i backuptabellen
+        if (sqlStatement.toUpperCase().contains("DELETE")) {
             addDeletedPostToBackup(sqlStatement);
-
         }
 
         //Utför sql statment
@@ -37,25 +36,25 @@ public class DataBaseSqlPerformer {
     }
 
     //visar innehåll av vald tabell
-    public void dispalyContentOfTable(String tableName){
+    public void dispalyContentOfTable(String tableName) {
         ResultSet rs;
         try {
             Connection con = this.connectToDatabase();
             Statement stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM "+tableName+";");
+            rs = stmt.executeQuery("SELECT * FROM " + tableName + ";");
 
             while (rs.next()) {
-                //sqllite har inte primary key däremot ett unikt rowid-värde som man kan använda
-                //RowId rowid = rs.getRowId("rowid");
+
+                String id = rs.getString("id");
                 String fname = rs.getString("firstName");
                 String lname = rs.getString("lastName");
                 String adress = rs.getString("adress");
                 String phone = rs.getString("phoneNumber");
                 String company = rs.getString("company");
-                System.out.println(fname+" "+lname+" "+adress+" "+phone+" "+company);
+                System.out.println(id + " " + fname + " " + lname + " " + adress + " " + phone + " " + company);
             }
 
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -73,18 +72,16 @@ public class DataBaseSqlPerformer {
         String phoneNumber = splitUpDeleteStatement[1];
 
         return phoneNumber;
-
-
     }
 
     //skapar och utför det sql-statment som sätter in datan som ska raderas in i backup-tabellen
-    public void insertPostIntoBackupTable(String phoneNumber){
+    public void insertPostIntoBackupTable(String phoneNumber) {
 
         ResultSet rs;
         try {
             Connection con = this.connectToDatabase();
             Statement stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM ContactsList WHERE phoneNumber='"+phoneNumber+"';");
+            rs = stmt.executeQuery("SELECT * FROM ContactsList WHERE phoneNumber='" + phoneNumber + "';");
 
             String insertToBbackupStatement = "INSERT INTO ContactsListBackup (firstName, lastName, adress, phoneNumber, company) VALUES (";
 
@@ -112,7 +109,53 @@ public class DataBaseSqlPerformer {
                 insertToBbackupStatement += "');";
             }
             stmt.execute(insertToBbackupStatement);
-        } catch (Exception e){
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    //gör senaste raderingen ogjort
+    public void undoDelete() {
+        ResultSet rs;
+
+        try {
+            Connection con = this.connectToDatabase();
+            Statement stmt = con.createStatement();
+
+            //hämta senast insatta post i backup
+            rs = stmt.executeQuery("SELECT * FROM ContactsListBackup ORDER BY id DESC LIMIT 1;");
+            //statement som fylls på används för att sätta in datan i ContactsList
+            String reinsertToContactsTable = "INSERT INTO ContactsList(firstName, lastName, adress, phoneNumber, company) VALUES (";
+
+            String idOfContactToDeleteFromBackupTable = rs.getString("id");
+
+            reinsertToContactsTable += "'";
+            reinsertToContactsTable += rs.getString("firstName");
+            reinsertToContactsTable += "',";
+
+            reinsertToContactsTable += "'";
+            reinsertToContactsTable += rs.getString("lastName");
+            reinsertToContactsTable += "',";
+
+            reinsertToContactsTable += "'";
+            reinsertToContactsTable += rs.getString("adress");
+            reinsertToContactsTable += "',";
+
+            reinsertToContactsTable += "'";
+            reinsertToContactsTable += rs.getString("phoneNumber");
+            reinsertToContactsTable += "',";
+
+            reinsertToContactsTable += "'";
+            reinsertToContactsTable += rs.getString("company");
+            reinsertToContactsTable += "');";
+
+            //när posten är överförd tillbaka till tabellen....
+            stmt.execute(reinsertToContactsTable);
+            //...så raderas den från backupen
+            stmt.execute("DELETE FROM ContactsListBackup WHERE id=" + idOfContactToDeleteFromBackupTable + ";");
+
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
