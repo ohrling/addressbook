@@ -20,12 +20,6 @@ public class DataBaseSqlPerformer {
     //utför sql kommando
     public void performSqlStatment(String sqlStatement) {
 
-        //om det är ett deletestatement - sätt in raderad kontakt i backuptabellen
-        if (sqlStatement.toUpperCase().contains("DELETE")) {
-            addDeletedPostToBackup(sqlStatement);
-        }
-
-        //Utför sql statment
         try {
             Connection con = this.connectToDatabase();
             Statement stmt = con.createStatement();
@@ -36,12 +30,13 @@ public class DataBaseSqlPerformer {
     }
 
     //visar innehåll av vald tabell
-    public void dispalyContentOfTable(String tableName) {
+    public void dispalyContentOfContactsList() {
         ResultSet rs;
         try {
             Connection con = this.connectToDatabase();
             Statement stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM " + tableName + ";");
+            //Visa bara poster med isDeleted = 0 dvs inte raderade
+            rs = stmt.executeQuery("SELECT * FROM contactsList WHERE isDeleted = 0 ORDER BY id ASC;");
 
             while (rs.next()) {
 
@@ -51,114 +46,62 @@ public class DataBaseSqlPerformer {
                 String adress = rs.getString("adress");
                 String phone = rs.getString("phoneNumber");
                 String company = rs.getString("company");
-                System.out.println(id + " " + fname + " " + lname + " " + adress + " " + phone + " " + company);
+                String isDeleted = rs.getString("isDeleted");
+                String lastUpdated = rs.getString("lastUpdated");
+                System.out.println(id + " " + fname + " " + lname + " " + adress + " " + phone + " " + company + " "+ isDeleted+ " "+ lastUpdated);
             }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-
-
-    private void addDeletedPostToBackup(String sqlStatement) {
-
-        String phoneNumber = extractPhoneNumber(sqlStatement);
-        insertPostIntoBackupTable(phoneNumber);
-    }
-
-    private String extractPhoneNumber(String sqlStatement) {
-
-        String splitUpDeleteStatement[] = sqlStatement.split("'", 4);
-        String phoneNumber = splitUpDeleteStatement[1];
-
-        return phoneNumber;
-    }
-
-    //skapar och utför det sql-statment som sätter in datan som ska raderas in i backup-tabellen
-    public void insertPostIntoBackupTable(String phoneNumber) {
-
-        ResultSet rs;
-        try {
-            Connection con = this.connectToDatabase();
-            Statement stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM ContactsList WHERE phoneNumber='" + phoneNumber + "';");
-
-            String insertToBbackupStatement = "INSERT INTO ContactsListBackup (firstName, lastName, adress, phoneNumber, company) VALUES (";
-
-
-            while (rs.next()) {
-                //RowId rowid = rs.getRowId("rowid");
-                insertToBbackupStatement += "'";
-                insertToBbackupStatement += rs.getString("firstName");
-                insertToBbackupStatement += "',";
-
-                insertToBbackupStatement += "'";
-                insertToBbackupStatement += rs.getString("lastName");
-                insertToBbackupStatement += "',";
-
-                insertToBbackupStatement += "'";
-                insertToBbackupStatement += rs.getString("adress");
-                insertToBbackupStatement += "',";
-
-                insertToBbackupStatement += "'";
-                insertToBbackupStatement += rs.getString("phoneNumber");
-                insertToBbackupStatement += "',";
-
-                insertToBbackupStatement += "'";
-                insertToBbackupStatement += rs.getString("company");
-                insertToBbackupStatement += "');";
-            }
-            stmt.execute(insertToBbackupStatement);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
 
     //gör senaste raderingen ogjort
-    public void undoDelete() {
+    public void undoLatestDelete() {
         ResultSet rs;
 
         try {
             Connection con = this.connectToDatabase();
             Statement stmt = con.createStatement();
-
-            //hämta senast insatta post i backup
-            rs = stmt.executeQuery("SELECT * FROM ContactsListBackup ORDER BY id DESC LIMIT 1;");
-            //statement som fylls på används för att sätta in datan i ContactsList
-            String reinsertToContactsTable = "INSERT INTO ContactsList(firstName, lastName, adress, phoneNumber, company) VALUES (";
-
-            String idOfContactToDeleteFromBackupTable = rs.getString("id");
-
-            reinsertToContactsTable += "'";
-            reinsertToContactsTable += rs.getString("firstName");
-            reinsertToContactsTable += "',";
-
-            reinsertToContactsTable += "'";
-            reinsertToContactsTable += rs.getString("lastName");
-            reinsertToContactsTable += "',";
-
-            reinsertToContactsTable += "'";
-            reinsertToContactsTable += rs.getString("adress");
-            reinsertToContactsTable += "',";
-
-            reinsertToContactsTable += "'";
-            reinsertToContactsTable += rs.getString("phoneNumber");
-            reinsertToContactsTable += "',";
-
-            reinsertToContactsTable += "'";
-            reinsertToContactsTable += rs.getString("company");
-            reinsertToContactsTable += "');";
-
-            //när posten är överförd tillbaka till tabellen....
-            stmt.execute(reinsertToContactsTable);
-            //...så raderas den från backupen
-            stmt.execute("DELETE FROM ContactsListBackup WHERE id=" + idOfContactToDeleteFromBackupTable + ";");
+            //hämta senast ändrade post genom sortering efter tidsstämpel
+            rs = stmt.executeQuery("SELECT * FROM ContactsList WHERE isDeleted = 1 ORDER BY lastUpdated DESC LIMIT 1;");
+            String id = rs.getString("id");
+            //Återställ isDeleted till 0 (false)
+            stmt.execute("UPDATE ContactsList SET isDeleted = 0 WHERE id = "+id+";");
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
+
+    /*
+    //gör om alla raderingar
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Denna metoden har en bug, den ska återställa alla raderade men återställer bara en, ska felsöka sen
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void undoAllDeletes() {
+        ResultSet rs;
+
+        try {
+            Connection con = this.connectToDatabase();
+            Statement stmt = con.createStatement();
+            //hämta senast ändrade post genom sortering efter tidsstämpel
+
+            rs = stmt.executeQuery("SELECT * FROM ContactsList WHERE isDeleted = 1 ORDER BY lastUpdated DESC LIMIT 1;");
+
+            while (rs.next()){
+
+                String id = rs.getString("id");
+                System.out.println(id);
+                //Återställ isDeleted till 0 (false)
+                stmt.execute("UPDATE ContactsList SET isDeleted = 0 WHERE id = "+id+";");
+
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    } */
 }
 
 

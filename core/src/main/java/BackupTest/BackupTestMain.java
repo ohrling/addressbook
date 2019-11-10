@@ -2,74 +2,61 @@ package BackupTest;
 
 public class BackupTestMain {
 
-/*    Här testar jag att skapa en sqlLite databas, den innehåller 2 tabeller ContactsList och ContactsListBackup
+/*
 
-    I denna version används kontaktlistans telefonnummer som en unik identifierare när poster som
-    ska raderas kopieras över till backup-tabellen. Därför är telefonnummer det enda som fungerar
-    att använda som att villkor när man ska radera en post i tabellen (se exempel nedan).
+    I main nedan skapas en databas med en tabell som är en kontaktlista för personuppgifter.
+
+    Kolumnen isDeleted i tabellen kan vara 0 (false) eller 1 (true). Dvs den kolumnen avgör om kontakte ska vara "raderad" eller inte
+
+     Kontaktlistans telefonnummer är en unik identifierare för poster som
+    ska raderas. Därför bör telefonnummer användas som villkor när man ska radera en post i tabellen.
     Det betyder också att alla telefonnummer måste vara unika när de matas in i databasen.
-    Alla telefonnummer måste också omges med symbolerna '' för att kunna identifieras.
-    Poster som införs i tabellen som inte har unikt telefonnummer kommer inte att föras in*/
+    Poster som införs i tabellen som inte har unikt telefonnummer kommer inte att registreras*/
 
     public static void main(String[] args) {
 
-        //DataBaseCreator skapar databasen lokalt
+        //DataBaseCreator skapar "in memory" databasen sqlLite
         DataBaseCreator localDatabase = new DataBaseCreator();
         localDatabase.createNewDatabase("adressbook.db");
 
-        //  DataBaseSqlPerformer utför mottagna sql-kommandon i databasen samt utför backup-operationer när data raderas
+        //  DataBaseSqlPerformers uppgift är att utföra mottagna sql-kommandon i databasen
         DataBaseSqlPerformer sqlLiteDBCommunicator = new DataBaseSqlPerformer();
 
-        //här skapas tabellerna ContactsList och ContactsListBackup
-        sqlLiteDBCommunicator.performSqlStatment("CREATE TABLE IF NOT EXISTS ContactsList(id INTEGER PRIMARY KEY AUTOINCREMENT,firstName varchar(40),lastName varchar(40),adress varchar(100),phoneNumber varchar(100) UNIQUE, company varchar(100));");
-        sqlLiteDBCommunicator.performSqlStatment("CREATE TABLE IF NOT EXISTS ContactsListBackup(id INTEGER PRIMARY KEY AUTOINCREMENT, firstName varchar(40),lastName varchar(40),adress varchar(100),phoneNumber varchar(100) UNIQUE, company varchar(100));");
+        //här skapas tabellen ContactsList                                                                                                                                                      `date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP                                  //lastUpdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        sqlLiteDBCommunicator.performSqlStatment("CREATE TABLE IF NOT EXISTS ContactsList(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,firstName varchar(40),lastName varchar(40),adress varchar(100),phoneNumber varchar(100) UNIQUE, company varchar(100), isDeleted tinyint(1), lastUpdated DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')));");
+
+        /*här skapas en trigger som ser till att den senast modifierade raden i tabellen får en ny tidsstämpel när den ändras
+        * detta för att man ska kunna sortera i tabellen efter senast ändrde rader */
+        sqlLiteDBCommunicator.performSqlStatment("CREATE TRIGGER change_lastUpdated AFTER UPDATE On ContactsList BEGIN UPDATE ContactsList SET lastUpdated = (strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')) WHERE phoneNumber = NEW.phoneNumber; END;");
 
         //sätter in data i ContactsList-tabellen
-        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company) VALUES ('Berit','Bengtson','Storgatan 9','0732471091','IKEA');");
-        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company) VALUES ('Anders','Andersson','Lillgatan 137','0739922270','Siemens');");
-        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company) VALUES ('Simon','Simonsson','Kungsgatan 29','0709842371','Sony');");
-        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company) VALUES ('Fadime','Molin','Västra Torget 7','0729242531','Volvo');");
+        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company, isDeleted) VALUES ('Berit','Bengtson','Storgatan 9','0732471091','IKEA', 0);");
+        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company, isDeleted) VALUES ('Anders','Andersson','Lillgatan 137','0739922270','Siemens', 0);");
+        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company, isDeleted) VALUES ('Simon','Simonsson','Kungsgatan 29','0709842371','Sony', 0);");
+        sqlLiteDBCommunicator.performSqlStatment("INSERT INTO ContactsList (firstName, lastName, adress, phoneNumber, company, isDeleted) VALUES ('Fadime','Molin','Västra Torget 7','0729242531','Volvo', 0);");
 
         //redovisa tabellens innehåll
         System.out.println();
         System.out.println("innehåll i ContactsList INNAN delete-statement: ");
-        sqlLiteDBCommunicator.dispalyContentOfTable("ContactsList");
+        sqlLiteDBCommunicator.dispalyContentOfContactsList();
+
+        //raderar kontakt från tabellen
+        //OBS! phoneNumber används som argument för vilken rad i tabellen som ska raderas
+        sqlLiteDBCommunicator.performSqlStatment("UPDATE ContactsList SET isDeleted = 1 WHERE phoneNumber='0709842371';");
 
 
-        System.out.println();
-        System.out.println("innehåll i ContactsListBackup INNAN delete-statement");
-        sqlLiteDBCommunicator.dispalyContentOfTable("ContactsListBackup");
-
-        //raderar kontakter från tabellen med kontakter
-        //telefonnummer används som villkor!
-        System.out.println();
-        System.out.println("Radera: ");
-        sqlLiteDBCommunicator.performSqlStatment("DELETE FROM ContactsList WHERE phoneNumber='0732471091';");
-        sqlLiteDBCommunicator.performSqlStatment("DELETE FROM ContactsList WHERE phoneNumber='0709842371';");
-        sqlLiteDBCommunicator.performSqlStatment("DELETE FROM ContactsList WHERE phoneNumber='0729242531';");
-
-        //redovisa tabellens innehåll
         System.out.println();
         System.out.println("innehåll i ContactsList EFTER delete-statement: ");
-        sqlLiteDBCommunicator.dispalyContentOfTable("ContactsList");
+        sqlLiteDBCommunicator.dispalyContentOfContactsList();
 
-        //redovisa backup tabellens innehåll
+        //ångra senast radering
+        sqlLiteDBCommunicator.undoLatestDelete();
+
         System.out.println();
-        System.out.println("innehåll i ContactsListBackup EFTER delete-statement");
-        sqlLiteDBCommunicator.dispalyContentOfTable("ContactsListBackup");
+        System.out.println("innehåll i ContactsList EFTER ångra-statement: ");
+        sqlLiteDBCommunicator.dispalyContentOfContactsList();
 
-        System.out.println("ångra radera * 2");
-        sqlLiteDBCommunicator.undoDelete();
-        sqlLiteDBCommunicator.undoDelete();
 
-        //redovisa tabellens innehåll
-        System.out.println();
-        System.out.println("innehåll i ContactsList EFTER ångra: ");
-        sqlLiteDBCommunicator.dispalyContentOfTable("ContactsList");
 
-        //redovisa backup tabellens innehåll
-        System.out.println();
-        System.out.println("innehåll i ContactsListBackup EFTER ångra");
-        sqlLiteDBCommunicator.dispalyContentOfTable("ContactsListBackup");
     }
 }
