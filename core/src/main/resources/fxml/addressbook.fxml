@@ -18,7 +18,8 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.control.TableView?>
-<VBox fx:controller="GuiController" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.control.TextArea?>
+<VBox fx:controller="gui.GuiController" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
     <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
         <AnchorPane>
             <Label accessibleText="Search" alignment="CENTER" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Sök" textAlignment="CENTER" wrapText="false">
@@ -42,12 +43,12 @@
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
             <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
                 <Label accessibleText="Addressbook" alignment="CENTER" font="$x1" layoutX="8.0" layoutY="14.0" style="&#10;" text="Adressbok" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-                <TableView fx:id="addressBookTabelView" blendMode="OVERLAY" layoutX="9.0" layoutY="50.0" opacity="0.17" prefHeight="494.0" prefWidth="417.0" />
+                <ListView fx:id="addressBookListView" layoutX="9.0" layoutY="50.0" prefHeight="494.0" prefWidth="417.0" />
             </AnchorPane>
         </ScrollPane>
         <AnchorPane>
             <Label accessibleText="More information" alignment="CENTER" font="$x1" layoutX="12.0" layoutY="14.0" style="&#10;" text="Mer info" textAlignment="CENTER" textFill="$x2" wrapText="false" />
-            <TreeView fx:id="moreInfoTreeView" blendMode="ADD" layoutX="10.0" layoutY="50.0" opacity="0.17" prefHeight="336.0" prefWidth="200.0" />
+            <TextArea fx:id="moreInfoTextArea" layoutX="10.0" layoutY="50.0" prefHeight="336.0" prefWidth="200.0" />
             <Button fx:id="editPostBtn" accessibleText="Edit post" layoutX="95.0" layoutY="512.0" mnemonicParsing="false" text="Ändra" textAlignment="CENTER" />
             <Button fx:id="deletePostBtn" accessibleText="Remove post" layoutX="158.0" layoutY="512.0" mnemonicParsing="false" text="Ta bort" textAlignment="CENTER" textFill="#fc0000" />
 
