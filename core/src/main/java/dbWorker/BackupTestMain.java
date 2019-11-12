@@ -16,8 +16,8 @@ public class BackupTestMain {
     public static void temp (){
 
         //DataBaseCreator skapar "in memory" databasen sqlLite
-        DataBaseCreator localDatabase = new DataBaseCreator();
-        localDatabase.createNewDatabase("addressbook.db");
+        DataBaseConnector localDatabase = new DataBaseConnector();
+        //localDatabase.createNewDatabase("addressbook.db");
 
         //  DataBaseSqlPerformers uppgift är att utföra mottagna sql-kommandon i databasen
         DataBaseSqlPerformer sqlLiteDBCommunicator = new DataBaseSqlPerformer();
