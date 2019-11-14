@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<DialogPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="gui.DialogController"
+            prefHeight="400.0" prefWidth="500.0">
+    <headerText>
+        Lägg till ny kontakt
+    </headerText>
+    <content>
+        <GridPane vgap="10" hgap="50">
+            <TextField promptText="Förnamn" fx:id="firstName" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
+            <TextArea promptText="Efternamn" fx:id="lastName" GridPane.rowIndex="1" GridPane.columnSpan="2" />
+            <TextArea promptText="Email" fx:id="email" GridPane.rowIndex="2" GridPane.columnSpan="2" />
+            <TextArea promptText="Telefonnummer" fx:id="phoneNr" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+            <TextArea promptText="Företag" fx:id="company" GridPane.rowIndex="4" GridPane.columnSpan="2" />
+
+        </GridPane>
+    </content>
+</DialogPane>

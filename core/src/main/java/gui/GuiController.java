@@ -7,15 +7,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import model.Contact;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
@@ -28,11 +32,13 @@ public class GuiController implements Initializable {
     @FXML private TextField company;
     @FXML private Button searchBtn;
     @FXML private ListView<Contact> addressBookListView;
+    @FXML private VBox mainPane;
 
     private ObservableList<Contact> contactsList = FXCollections.observableArrayList();
     private Alert searchAlert = new Alert(Alert.AlertType.NONE);
     private Map<String,String> searchValues = null;
     private DataBaseConnector db;
+    private Connection con = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -42,10 +48,13 @@ public class GuiController implements Initializable {
 
     private void loadData() {
         contactsList.removeAll();
+        addressBookListView.getItems().clear();
         contactsList.clear();
         try {
-            db.init();
-            Connection con = db.getConnection();
+            if(con == null) {
+                db.init();
+                con = db.getConnection();
+            }
             DataLoader getData = new GetSQLData();
             contactsList.addAll(getData.getData(con, searchValues));
             addressBookListView.getItems().addAll(contactsList);
@@ -66,7 +75,6 @@ public class GuiController implements Initializable {
     }
 
     @FXML protected void handleSearch(ActionEvent event) {
-        // TODO: 2019-11-04 Tillfälligt, för att visa att sökvärdena är tomma
         getSearchValues();
         if(searchValues.isEmpty()) {
             searchAlert.setAlertType(Alert.AlertType.ERROR);
@@ -95,6 +103,28 @@ public class GuiController implements Initializable {
         }
         if(!company.getText().isEmpty()) {
             searchValues.put("company", company.getText());
+        }
+    }
+
+    @FXML
+    public void showAddItemDialog() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(mainPane.getScene().getWindow());
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/fxml/addnew.fxml"));
+        try {
+            dialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            System.out.println("Kunde inte ladda dialogrutan.");
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.FINISH);
+        Optional<ButtonType> result = dialog.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.FINISH) {
+            System.out.println("OK klickat");
+        } else {
+            System.out.println("Cancel clicked");
         }
     }
 }
