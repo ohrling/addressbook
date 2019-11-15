@@ -55,8 +55,5 @@ public class BackupTestMain {
         System.out.println();
         System.out.println("innehåll i ContactsList EFTER ångra-statement: ");
         sqlLiteDBCommunicator.dispalyContentOfContactsList();
-
-
-
     }
 }
