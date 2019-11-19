@@ -4,15 +4,15 @@ import java.text.MessageFormat;
 
 public class Contact {
     private int idNr;
-    private String firstName, lastName, email, phoneNr, company;
-    private boolean isDeleted;
+    private String firstName, lastName, email, phoneNumber, company;
+    private Boolean isDeleted;
 
-    public Contact(int idNr, String firstName, String lastName, String email, String phoneNr, String company, boolean isDeleted) {
+    public Contact(int idNr, String firstName, String lastName, String email, String phoneNumber, String company, Boolean isDeleted) {
         this.idNr = idNr;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.phoneNr = phoneNr;
+        this.phoneNumber = phoneNumber;
         this.company = company;
         this.isDeleted = isDeleted;
     }
@@ -33,16 +33,40 @@ public class Contact {
         return email;
     }
 
-    public String getPhoneNr() {
-        return phoneNr;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public String getCompany() {
         return company;
     }
 
-    public boolean isDeleted() {
+    public Boolean isDeleted() {
         return isDeleted;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 
     public String fullInfo() {
@@ -51,7 +75,7 @@ public class Contact {
                 "Företag: {2} \n" +
                 "Telefonnummer: {3} \n" +
                 "E-mail: {4}",
-                firstName,lastName,company,phoneNr,email);
+                firstName,lastName,company, phoneNumber,email);
     }
 
     @Override

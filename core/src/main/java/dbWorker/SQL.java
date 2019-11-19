@@ -1,0 +1,4 @@
+package dbWorker;
+
+interface SQL {
+}

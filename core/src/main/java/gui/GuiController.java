@@ -1,8 +1,8 @@
 package gui;
 
-import dbWorker.DataBaseConnector;
-import dbWorker.DataLoader;
-import dbWorker.GetSQLData;
+import dbWorker.SQLCreate;
+import dbWorker.SQLRead;
+import dbWorker.SQLUpdate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,8 +15,6 @@ import model.Contact;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,54 +22,46 @@ import java.util.ResourceBundle;
 
 public class GuiController implements Initializable {
 
+    @FXML private Label rightLabel;
+    @FXML private Label leftLabel;
     @FXML private TextArea moreInfoTextArea;
     @FXML private TextField firstName;
     @FXML private TextField lastName;
     @FXML private TextField email;
     @FXML private TextField phoneNr;
     @FXML private TextField company;
-    @FXML private Button searchBtn;
     @FXML private ListView<Contact> addressBookListView;
     @FXML private VBox mainPane;
 
     private ObservableList<Contact> contactsList = FXCollections.observableArrayList();
     private Alert searchAlert = new Alert(Alert.AlertType.NONE);
     private Map<String,String> searchValues = null;
-    private DataBaseConnector db;
-    private Connection con = null;
+    private static Contact choosenContact = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        db = new DataBaseConnector();
         loadData();
     }
 
     private void loadData() {
+        // Laddar data från databasen baserat på searchValues
         contactsList.removeAll();
         addressBookListView.getItems().clear();
         contactsList.clear();
-        try {
-            if(con == null) {
-                db.init();
-                con = db.getConnection();
-            }
-            DataLoader getData = new GetSQLData();
-            contactsList.addAll(getData.getData(con, searchValues));
-            addressBookListView.getItems().addAll(contactsList);
 
-            // Visar mer info när man klickar på post
-            addressBookListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-                if(newValue != null) {
-                    Contact contact = addressBookListView.getSelectionModel().getSelectedItem();
-                    moreInfoTextArea.setText(contact.fullInfo());
-                }
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            searchAlert.setAlertType(Alert.AlertType.ERROR);
-            searchAlert.setContentText("Kunde inte ansluta till databasen!");
-            searchAlert.show();
-        }
+        SQLRead read = new SQLRead();
+        setRightLabel(read.init());
+        contactsList.addAll(read.read(searchValues));
+        addressBookListView.setItems(contactsList);
+
+        // Visar mer info när man klickar på post
+        addressBookListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                choosenContact = addressBookListView.getSelectionModel().getSelectedItem();
+                moreInfoTextArea.setText(choosenContact.fullInfo());
+            }
+        });
+        setRightLabel(read.closeCon());
     }
 
     @FXML protected void handleSearch(ActionEvent event) {
@@ -81,50 +71,95 @@ public class GuiController implements Initializable {
             String content = "Ange vad du letar efter!";
             searchAlert.setContentText(content);
             searchAlert.show();
+            searchValues = null;
+            loadData();
         }
         else {
             loadData();
         }
     }
 
+    @FXML protected void handleEdit(ActionEvent event) {
+        SQLUpdate update = new SQLUpdate();
+        try {
+            setRightLabel(update.update(showContactDialog(false)));
+        } catch (NullPointerException e) {
+            System.out.println(e.getMessage());
+        }
+        update.closeCon();
+    }
+
     private void getSearchValues() {
+        // Genererar sökvärdena
         searchValues = new HashMap<>();
         if(!firstName.getText().isEmpty()) {
-               searchValues.put("firstName", firstName.getText());
+               searchValues.put("firstName", firstName.getText().trim());
         }
         if(!lastName.getText().isEmpty()){
-            searchValues.put("lastName", lastName.getText());
+            searchValues.put("lastName", lastName.getText().trim());
         }
         if(!email.getText().isEmpty()){
-            searchValues.put("email", email.getText());
+            searchValues.put("email", email.getText().trim());
         }
         if(!phoneNr.getText().isEmpty()) {
-            searchValues.put("phoneNumber", phoneNr.getText());
+            searchValues.put("phoneNumber", phoneNr.getText().trim());
         }
         if(!company.getText().isEmpty()) {
-            searchValues.put("company", company.getText());
+            searchValues.put("company", company.getText().trim());
         }
     }
 
     @FXML
-    public void showAddItemDialog() {
+    protected void handleAddNewContact() {
+        SQLCreate create = new SQLCreate();
+        choosenContact = null;
+        Map<String, String> values = showContactDialog(true);
+        if(values == null || values.isEmpty()){
+            // TODO: 2019-11-19 Ska något in här?
+        } else {
+            setRightLabel(
+                create.create(
+                    values.get("firstName"),
+                    values.get("lastName"),
+                    values.get("email"),
+                    values.get("phoneNumber"),
+                    values.get("company")
+                )
+            );
+        }
+        create.closeCon();
+    }
+
+    private Map<String,String> showContactDialog(boolean isNewContact) {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(mainPane.getScene().getWindow());
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("/fxml/addnew.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/addnew.fxml"), GuiMain.bundle);
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
         } catch (IOException e) {
-            System.out.println("Kunde inte ladda dialogrutan.");
+            setRightLabel("Kunde inte ladda dialogrutan.");
         }
 
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.FINISH);
         Optional<ButtonType> result = dialog.showAndWait();
         if(result.isPresent() && result.get() == ButtonType.FINISH) {
-            System.out.println("OK klickat");
+            DialogController controller = fxmlLoader.getController();
+            if(!isNewContact) {
+                controller.setValues();
+            }
+            return controller.processInput();
         } else {
-            System.out.println("Cancel clicked");
+            setRightLabel("Åtgärd avbruten");
+            return null;
         }
+    }
+
+    private void setRightLabel(String status) {
+        rightLabel.setText(status);
+    }
+
+    static Contact getChoosenContact() {
+        return choosenContact;
     }
 }

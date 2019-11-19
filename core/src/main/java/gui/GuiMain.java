@@ -2,13 +2,15 @@ package gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class GuiMain extends Application {
+    private static Locale locale = new Locale("sv","SE");
+    static ResourceBundle bundle = ResourceBundle.getBundle("fxml.Bundle", locale);
 
     public static void main(String[] args) {
         launch(args);
@@ -17,10 +19,10 @@ public class GuiMain extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/addressbook.fxml"));
-            primaryStage.setTitle("Adressbok v0.3");
-            primaryStage.setScene(new Scene(root,900,600));
-            primaryStage.show();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addressbook.fxml"), bundle);
+            Stage test = loader.load();
+            test.initOwner(primaryStage);
+            test.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
