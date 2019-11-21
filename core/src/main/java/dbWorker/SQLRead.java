@@ -19,14 +19,14 @@ public class SQLRead extends SQLPerformer implements Read {
                 stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0;");
                 generateContactList(stmt.executeQuery());
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         } else {
+            // Om det finns sökvärden så byggs en query av dessa som sedan exvekeras
             StringBuilder sqlCall = new StringBuilder("SELECT * FROM ContactsList WHERE ");
             List<String> keys = new ArrayList<>();
             for (Map.Entry<String, String> entry :
                     searchValues.entrySet()) {
-                System.out.println(entry.getKey());
                 keys.add(entry.getKey());
             }
             if (keys.size() == 1) {
@@ -37,7 +37,7 @@ public class SQLRead extends SQLPerformer implements Read {
                     if (keys.indexOf(key) == 0) {
                         sqlCall.append(key).append(" = ?");
                     } else {
-                        sqlCall.append(" AND ").append(key);
+                        sqlCall.append(" , ").append(key);
                     }
                     if (key.indexOf(key) > keys.size()) {
                         sqlCall.append(" = ?");
@@ -45,7 +45,6 @@ public class SQLRead extends SQLPerformer implements Read {
                 }
             }
             sqlCall.append(" = ? ORDER BY lastUpdated DESC;");
-            System.out.println(sqlCall);
             try {
                 stmt = connection.prepareStatement(sqlCall.toString());
                 for (String key :
@@ -54,12 +53,13 @@ public class SQLRead extends SQLPerformer implements Read {
                 }
                 generateContactList(stmt.executeQuery());
             } catch (SQLException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
         }
         return contacts;
     }
 
+    // Genererar listan som returneras
     private void generateContactList(ResultSet rs) throws SQLException {
         contacts = new ArrayList<>();
         while (rs.next()) {

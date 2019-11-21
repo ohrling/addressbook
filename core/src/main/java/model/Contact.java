@@ -3,7 +3,7 @@ package model;
 import java.text.MessageFormat;
 
 public class Contact {
-    private int idNr;
+    private final int idNr;
     private String firstName, lastName, email, phoneNumber, company;
     private Boolean isDeleted;
 

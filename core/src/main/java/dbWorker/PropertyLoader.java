@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+// Laddar filen för uppgifter för databasen från application.properties som ska ligga i resources
 class PropertyLoader {
     private static final String PROPERTIES_FILE = "application.properties";
     private static final Properties PROPERTIES = new Properties();

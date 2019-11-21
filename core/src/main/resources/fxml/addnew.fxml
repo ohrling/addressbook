@@ -1,18 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<DialogPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="gui.DialogController"
-            prefHeight="150.0" prefWidth="150.0">
-    <content>
-        <GridPane vgap="10" hgap="50" alignment="TOP_CENTER">
-            <TextField promptText="%fxml.firstname.text" fx:id="firstName" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
-            <TextField promptText="%fxml.lastname.text" fx:id="lastName" GridPane.rowIndex="1" GridPane.columnSpan="2" />
-            <TextField promptText="%fxml.email.text" fx:id="email" GridPane.rowIndex="2" GridPane.columnSpan="2" />
-            <TextField promptText="%fxml.phonenr.text" fx:id="phoneNumber" GridPane.rowIndex="3" GridPane.columnSpan="2" />
-            <TextField promptText="%fxml.company.text" fx:id="company" GridPane.rowIndex="4" GridPane.columnSpan="2" />
-        </GridPane>
-    </content>
-</DialogPane>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<AnchorPane id="dialogMain" prefHeight="240.0" prefWidth="200.0"
+            xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.editcontact.DialogController">
+   <VBox  layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="170.0" spacing="10.0">
+       <padding>
+           <Insets bottom="10.0" top="10.0" />
+       </padding>
+       <Label text="%fxml.dialoglabel.text"/>
+       <TextField fx:id="firstName" prefHeight="25.0" prefWidth="137.0" promptText="%fxml.firstname.text"/>
+       <TextField fx:id="lastName" promptText="%fxml.lastname.text"/>
+       <TextField fx:id="email" promptText="%fxml.email.text"/>
+       <TextField fx:id="phoneNumber" promptText="%fxml.phonenr.text"/>
+       <TextField fx:id="company" promptText="%fxml.company.text"/>
+       <ButtonBar>
+          <buttons>
+              <Button fx:id="cancelBtn" onAction="#dialogCancel" cancelButton="true" minWidth="56.0" prefHeight="25.0" prefWidth="65.0"
+                      text="%fxml.btn.cancel"/>
+              <Button fx:id="doneBtn" onAction="#dialogDone" defaultButton="true" minWidth="66.0" prefHeight="25.0" prefWidth="66.0"
+                      text="%fxml.btn.done"/>
+          </buttons>
+       </ButtonBar>
+   </VBox>
+    <padding>
+        <Insets right="10.0" />
+    </padding>
+</AnchorPane>

@@ -2,6 +2,6 @@ package dbWorker;
 
 import java.util.Map;
 
-public interface Update extends SQL {
-    String update(Map<String,String> searchValues);
+interface Update extends SQL {
+    void update(Map<String,String> searchValues);
 }

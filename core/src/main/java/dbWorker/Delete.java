@@ -2,6 +2,6 @@ package dbWorker;
 
 import model.Contact;
 
-public interface Delete extends SQL {
-    String delete(Contact contact);
+interface Delete extends SQL {
+    void delete(Contact contact);
 }
