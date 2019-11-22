@@ -14,7 +14,7 @@ public abstract class SQLPerformer implements SQL {
     PreparedStatement stmt;
     Connection connection = null;
 
-    SQLPerformer() {
+    public SQLPerformer() {
         PropertyLoader propertyLoader = new PropertyLoader();
         try {
             String location = propertyLoader.getProperty("sql.location") + propertyLoader.getProperty("sql.dbname"); // Hämtas från application.properties

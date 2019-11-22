@@ -13,7 +13,7 @@
     <scene>
         <Scene>
             <VBox fx:id="mainPane"
-                  prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171">
+                  prefHeight="600.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8.0.171">
                 <MenuBar>
                     <Menu text="Arkiv">
                         <MenuItem fx:id="newContact" text="%fxml.addnewcontactmenu.text" onAction="#addNewContact"/>
@@ -22,42 +22,68 @@
                         <MenuItem text="%fxml.close.text"/>
                     </Menu>
                 </MenuBar>
-                <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" VBox.vgrow="ALWAYS">
+                <SplitPane dividerPositions="0.2505567928730512, 0.705567928730512" focusTraversable="true" VBox.vgrow="ALWAYS">
                     <AnchorPane>
-                        <Label accessibleText="Search" alignment="CENTER" layoutY="14.0" minWidth="60.0" style="&#10;" text="%fxml.labelsearch.text" textAlignment="CENTER" >
+                        <Label accessibleText="Search" alignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" style="&#10;" text="%fxml.labelsearch.text" textAlignment="CENTER" >
                             <font>
-                                <Font size="18.0" fx:id="x1" />
+                                <Font name="Roboto" size="18.0" fx:id="x1" />
                             </font>
                             <textFill>
                                 <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                             </textFill>
                         </Label>
-                        <Group fx:id="searchForm" layoutX="14.0" layoutY="50.0">
-                            <TextField fx:id="firstName" accessibleText="Firstname" promptText="%fxml.firstname.text" />
-                            <TextField fx:id="lastName" accessibleText="Lastname" layoutY="38.0" promptText="%fxml.lastname.text" />
-                            <TextField fx:id="email" accessibleText="E-mail" layoutY="76.0" promptText="%fxml.email.text" />
-                            <TextField fx:id="phoneNr" accessibleText="Phonenumber" layoutY="113.0" promptText="%fxml.phonenr.text" />
-                            <TextField fx:id="company" accessibleText="Company" layoutY="150.0" promptText="%fxml.company.text" />
-                            <Button fx:id="searchBtn" accessibleText="Search for posts" defaultButton="true" layoutX="113.0" layoutY="190.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" />
+                        <Group fx:id="searchForm" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0">
+                            <TextField fx:id="firstName" accessibleText="Firstname" promptText="%fxml.firstname.text">
+                                <font>
+                                    <Font name="Roboto" fx:id="x5"/>
+                                </font>
+                            </TextField>
+                            <TextField fx:id="lastName" accessibleText="Lastname" layoutY="38.0" promptText="%fxml.lastname.text" font="$x5"/>
+                            <TextField fx:id="email" accessibleText="E-mail" layoutY="76.0" promptText="%fxml.email.text" font="$x5" />
+                            <TextField fx:id="phoneNr" accessibleText="Phonenumber" layoutY="113.0" promptText="%fxml.phonenr.text" font="$x5" />
+                            <TextField fx:id="company" accessibleText="Company" layoutY="150.0" promptText="%fxml.company.text" font="$x5" />
+                            <Button fx:id="searchBtn" accessibleText="Search for posts" defaultButton="true" layoutX="113.0" layoutY="190.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" font="$x5" />
                         </Group>
                     </AnchorPane>
-                    <ScrollPane>
-                        <AnchorPane id="Content" prefHeight="545.0" prefWidth="430.0">
-                            <Label accessibleText="Addressbook" alignment="CENTER" font="$x1" layoutX="8.0" layoutY="14.0" style="&#10;" text="%fxml.labeladdressbook.text" textAlignment="CENTER" textFill="$x2"  />
-                            <ListView fx:id="addressBookListView" layoutX="9.0" layoutY="50.0" prefHeight="494.0" prefWidth="417.0" />
-                        </AnchorPane>
-                    </ScrollPane>
                     <AnchorPane>
-                        <Label accessibleText="More information" alignment="CENTER" font="$x1" layoutX="12.0" layoutY="14.0" style="&#10;" text="%fxml.labelmoreinfo.text" textAlignment="CENTER" textFill="$x2" />
-                        <TextArea fx:id="moreInfoTextArea" layoutX="10.0" layoutY="50.0" prefHeight="336.0" prefWidth="210" />
-                        <Button fx:id="editPostBtn" onAction="#showContactDialog" accessibleText="Edit post" layoutX="95.0" layoutY="512.0" mnemonicParsing="false" text="%fxml.editbtn.text" textAlignment="CENTER" />
-                        <Button fx:id="deletePostBtn" onAction="#handleDelete" accessibleText="Remove post" layoutX="158.0" layoutY="512.0" mnemonicParsing="false" text="%fxml.deletebtn.text" textAlignment="CENTER" textFill="#fc0000" />
+                        <Label accessibleText="Addressbook" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" alignment="CENTER" font="$x1" style="&#10;" text="%fxml.labeladdressbook.text" textAlignment="CENTER" textFill="$x2"  />
+                        <ScrollPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" id="Content" style="-fx-font-family: 'Roboto Light'">
+                                <ListView fx:id="addressBookListView" prefHeight="500.0" prefWidth="430.0" style="-fx-background-color: transparent"/>
+                        </ScrollPane>
+                    </AnchorPane>
+                    <AnchorPane VBox.vgrow="ALWAYS">
+                        <Label accessibleText="More information" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" alignment="CENTER" font="$x1" style="&#10;" text="%fxml.labelmoreinfo.text" textAlignment="CENTER" textFill="$x2" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="3" />
+                        <GridPane AnchorPane.topAnchor="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="60" />
+                                <ColumnConstraints minWidth="100" />
+                            </columnConstraints>
+                            <!-- <TextArea fx:id="moreInfoTextArea" prefHeight="336.0" prefWidth="210" font="$x5" /> -->
+                            <Label fx:id="moreInfoFirstNameLabel" wrapText="true" text="%fxml.firstname.text" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                                <font>
+                                    <Font name="Roboto" size="14" fx:id="x6"/>
+                                </font>
+                            </Label>
+                            <Label fx:id="moreInfoFirstNameLabelInfo" text=" " wrapText="true" font="$x6" GridPane.rowIndex="1" GridPane.columnIndex="3"/>
+                            <Label fx:id="moreInfoLastNameLabel" wrapText="true" font="$x6" text="%fxml.lastname.text" GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                            <Label fx:id="moreInfoLastNameLabelInfo" text=" " wrapText="true" font="$x6" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
+                            <Label fx:id="moreInfoEmailLabel" wrapText="true" font="$x6" text="%fxml.email.text" GridPane.rowIndex="3" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                            <Label fx:id="moreInfoEmailLabelInfo" text=" " wrapText="true" font="$x6" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
+                            <Label fx:id="moreInfoPhoneNrLabel" wrapText="true" font="$x6" text="%fxml.phonenr.text" GridPane.rowIndex="4" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+                            <Label fx:id="moreInfoPhoneNrLabelInfo" text=" " wrapText="true" font="$x6" GridPane.rowIndex="4" GridPane.columnIndex="3"/>
+                            <Label fx:id="moreInfoCompanyLabel" wrapText="true" font="$x6" text="%fxml.company.text" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="1"/>
+                            <Label fx:id="moreInfoCompanyLabelInfo" text=" " wrapText="true" font="$x6" GridPane.rowIndex="5" GridPane.columnIndex="3" />
+                        </GridPane>
+                        <FlowPane layoutY="170" alignment="CENTER_RIGHT">
+                            <Button fx:id="editPostBtn"  onAction="#showContactDialog" accessibleText="Edit post" layoutX="95.0" layoutY="512.0" mnemonicParsing="false" text="%fxml.editbtn.text" textAlignment="CENTER" font="$x5" />
+                            <Button fx:id="deletePostBtn" onAction="#handleDelete" accessibleText="Remove post" layoutX="158.0" layoutY="512.0" mnemonicParsing="false" text="%fxml.deletebtn.text" textAlignment="CENTER" textFill="#fc0000" font="$x5" />
+                        </FlowPane>
                     </AnchorPane>
                 </SplitPane>
                 <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
                     <Label fx:id="leftLabel" maxHeight="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                         <font>
-                            <Font size="11.0" fx:id="x3" />
+                            <Font name="Roboto" size="11.0" fx:id="x3" />
                         </font>
                         <textFill>
                             <Color blue="0.625" green="0.625" red="0.625" fx:id="x4" />

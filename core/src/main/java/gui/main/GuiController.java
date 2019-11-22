@@ -1,8 +1,6 @@
 package gui.main;
 
-import dbWorker.SQLDelete;
-import dbWorker.SQLRead;
-import dbWorker.SQLUndoLastDelete;
+import dbWorker.*;
 import gui.singletons.MessageContainer;
 import gui.singletons.ObjectPasser;
 import javafx.collections.FXCollections;
@@ -15,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -32,12 +29,8 @@ public class GuiController implements Initializable {
 
     @FXML private Label rightLabel;
     @FXML private Label leftLabel;
-    @FXML private TextArea moreInfoTextArea;
-    @FXML private TextField firstName;
-    @FXML private TextField lastName;
-    @FXML private TextField email;
-    @FXML private TextField phoneNr;
-    @FXML private TextField company;
+    @FXML private TextField firstName, lastName, email, phoneNr, company;
+    @FXML private Label moreInfoFirstNameLabelInfo, moreInfoLastNameLabelInfo, moreInfoEmailLabelInfo, moreInfoPhoneNrLabelInfo, moreInfoCompanyLabelInfo;
     @FXML private ListView<Contact> addressBookListView;
 
     private ObservableList<Contact> contactsList = FXCollections.observableArrayList();
@@ -46,6 +39,14 @@ public class GuiController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         MessageContainer.getRightLabelMessage().addListener((observable, oldValue, newValue) -> rightLabel.setText(newValue));
+        // Initierar och skapar databasen om denne inte finns
+        // TODO: 2019-11-22 Kolla så att detta funkar när databasen inte existerar!
+        SQL sql = new SQLPerformer() {
+            @Override
+            public void init() {
+                super.init();
+            }
+        };
         loadData();
     }
 
@@ -56,7 +57,6 @@ public class GuiController implements Initializable {
         contactsList.clear();
 
         SQLRead read = new SQLRead();
-        read.init(); // Initierar och skapar databasen om denne inte finns
         contactsList.addAll(read.read(searchValues));
         addressBookListView.setItems(contactsList);
 
@@ -64,7 +64,12 @@ public class GuiController implements Initializable {
         addressBookListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue != null) {
                 ObjectPasser.contact = addressBookListView.getSelectionModel().getSelectedItem();
-                moreInfoTextArea.setText(ObjectPasser.contact.fullInfo());
+                moreInfoFirstNameLabelInfo.setText(ObjectPasser.contact.getFirstName());
+                moreInfoLastNameLabelInfo.setText(ObjectPasser.contact.getLastName());
+                moreInfoEmailLabelInfo.setText(ObjectPasser.contact.getEmail());
+                moreInfoPhoneNrLabelInfo.setText(ObjectPasser.contact.getPhoneNumber());
+                moreInfoCompanyLabelInfo.setText(ObjectPasser.contact.getCompany());
+                //moreInfoTextArea.setText(ObjectPasser.contact.fullInfo());
             }
         });
         read.closeCon();

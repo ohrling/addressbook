@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SQLRead extends SQLPerformer implements Read {
-    private List<Contact> contacts = null;
+    private List<Contact> contacts = new ArrayList<>();
 
     @Override
     public List<Contact> read(Map<String,String> searchValues) {
@@ -37,7 +37,7 @@ public class SQLRead extends SQLPerformer implements Read {
                     if (keys.indexOf(key) == 0) {
                         sqlCall.append(key).append(" = ?");
                     } else {
-                        sqlCall.append(" , ").append(key);
+                        sqlCall.append(" AND ").append(key);
                     }
                     if (key.indexOf(key) > keys.size()) {
                         sqlCall.append(" = ?");
@@ -61,7 +61,6 @@ public class SQLRead extends SQLPerformer implements Read {
 
     // Genererar listan som returneras
     private void generateContactList(ResultSet rs) throws SQLException {
-        contacts = new ArrayList<>();
         while (rs.next()) {
             boolean isDeleted = rs.getByte("isDeleted") == 1;
             contacts.add(new Contact(

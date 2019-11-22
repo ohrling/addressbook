@@ -1,4 +1,4 @@
 package dbWorker;
 
-interface SQL {
+public interface SQL {
 }
