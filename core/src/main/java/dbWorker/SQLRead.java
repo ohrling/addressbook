@@ -30,21 +30,21 @@ public class SQLRead extends SQLPerformer implements Read {
                 keys.add(entry.getKey());
             }
             if (keys.size() == 1) {
-                sqlCall.append(keys.get(0));
+                sqlCall.append(keys.get(0)).append(" = ?");
             } else {
                 for (String key :
                         keys) {
                     if (keys.indexOf(key) == 0) {
                         sqlCall.append(key).append(" = ?");
                     } else {
-                        sqlCall.append(" AND ").append(key);
+                        sqlCall.append(" AND ").append(key).append(" = ? ");
                     }
                     if (key.indexOf(key) > keys.size()) {
                         sqlCall.append(" = ?");
                     }
                 }
             }
-            sqlCall.append(" = ? ORDER BY lastUpdated DESC;");
+            sqlCall.append(" ORDER BY lastUpdated DESC;");
             try {
                 stmt = connection.prepareStatement(sqlCall.toString());
                 for (String key :

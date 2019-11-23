@@ -3,6 +3,7 @@ package gui.main;
 import dbWorker.*;
 import gui.singletons.MessageContainer;
 import gui.singletons.ObjectPasser;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -41,7 +42,7 @@ public class GuiController implements Initializable {
         MessageContainer.getRightLabelMessage().addListener((observable, oldValue, newValue) -> rightLabel.setText(newValue));
         // Initierar och skapar databasen om denne inte finns
         // TODO: 2019-11-22 Kolla så att detta funkar när databasen inte existerar!
-        SQL sql = new SQLPerformer() {
+        new SQLPerformer() {
             @Override
             public void init() {
                 super.init();
@@ -57,7 +58,7 @@ public class GuiController implements Initializable {
         contactsList.clear();
 
         SQLRead read = new SQLRead();
-        contactsList.addAll(read.read(searchValues));
+        contactsList.addAll(read.read(searchValues)); // TODO: 2019-11-22 Ska Read returnera en observable list?
         addressBookListView.setItems(contactsList);
 
         // Visar mer info när man klickar på post
@@ -69,7 +70,6 @@ public class GuiController implements Initializable {
                 moreInfoEmailLabelInfo.setText(ObjectPasser.contact.getEmail());
                 moreInfoPhoneNrLabelInfo.setText(ObjectPasser.contact.getPhoneNumber());
                 moreInfoCompanyLabelInfo.setText(ObjectPasser.contact.getCompany());
-                //moreInfoTextArea.setText(ObjectPasser.contact.fullInfo());
             }
         });
         read.closeCon();
@@ -136,5 +136,9 @@ public class GuiController implements Initializable {
         undoLast.undo();
         undoLast.closeCon();
         loadData();
+    }
+
+    public void closeApplication(ActionEvent event) {
+        Platform.exit();
     }
 }

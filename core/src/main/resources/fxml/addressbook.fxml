@@ -19,10 +19,10 @@
                         <MenuItem fx:id="newContact" text="%fxml.addnewcontactmenu.text" onAction="#addNewContact"/>
                         <MenuItem fx:id="undoLastDelete" text="%fxml.undolastdeletemenu.text" onAction="#undoLastDelete"/>
                         <SeparatorMenuItem/>
-                        <MenuItem text="%fxml.close.text"/>
+                        <MenuItem text="%fxml.close.text" onAction="#closeApplication"/>
                     </Menu>
                 </MenuBar>
-                <SplitPane dividerPositions="0.2505567928730512, 0.705567928730512" focusTraversable="true" VBox.vgrow="ALWAYS">
+                <SplitPane dividerPositions="0.25, 0.75" focusTraversable="true" VBox.vgrow="ALWAYS">
                     <AnchorPane>
                         <Label accessibleText="Search" alignment="CENTER" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" style="&#10;" text="%fxml.labelsearch.text" textAlignment="CENTER" >
                             <font>
@@ -48,17 +48,16 @@
                     <AnchorPane>
                         <Label accessibleText="Addressbook" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" alignment="CENTER" font="$x1" style="&#10;" text="%fxml.labeladdressbook.text" textAlignment="CENTER" textFill="$x2"  />
                         <ScrollPane AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0" id="Content" style="-fx-font-family: 'Roboto Light'">
-                                <ListView fx:id="addressBookListView" prefHeight="500.0" prefWidth="430.0" style="-fx-background-color: transparent"/>
+                                <ListView fx:id="addressBookListView" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: transparent"/>
                         </ScrollPane>
                     </AnchorPane>
-                    <AnchorPane VBox.vgrow="ALWAYS">
+                    <AnchorPane>
                         <Label accessibleText="More information" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" alignment="CENTER" font="$x1" style="&#10;" text="%fxml.labelmoreinfo.text" textAlignment="CENTER" textFill="$x2" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="3" />
                         <GridPane AnchorPane.topAnchor="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0">
                             <columnConstraints>
                                 <ColumnConstraints minWidth="60" />
                                 <ColumnConstraints minWidth="100" />
                             </columnConstraints>
-                            <!-- <TextArea fx:id="moreInfoTextArea" prefHeight="336.0" prefWidth="210" font="$x5" /> -->
                             <Label fx:id="moreInfoFirstNameLabel" wrapText="true" text="%fxml.firstname.text" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2">
                                 <font>
                                     <Font name="Roboto" size="14" fx:id="x6"/>
