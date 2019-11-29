@@ -1,6 +1,7 @@
 package core.editcontact;
 
 import dbWorker.SQLCreate;
+import dbWorker.SQLRead;
 import dbWorker.SQLUpdate;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -83,6 +84,10 @@ public class DialogController implements Initializable {
                 create.closeCon();
             }
         }
+        // Refresh the Observable list
+        SQLRead read = new SQLRead();
+        read.read(null);
+        read.closeCon();
         Stage stage = (Stage) doneBtn.getScene().getWindow();
         stage.close();
     }

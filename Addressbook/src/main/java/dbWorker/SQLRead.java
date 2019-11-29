@@ -1,5 +1,6 @@
 package dbWorker;
 
+import core.singletons.ContactArrayContainer;
 import model.Contact;
 
 import java.sql.ResultSet;
@@ -12,7 +13,7 @@ public class SQLRead extends SQLPerformer implements Read {
     private List<Contact> contacts = new ArrayList<>();
 
     @Override
-    public List<Contact> read(Map<String,String> searchValues) {
+    public void read(Map<String,String> searchValues) {
         // Om searchValues är null så returneras alla kontakter som inte är raderade
         if(searchValues == null || searchValues.isEmpty()){
             try {
@@ -57,7 +58,7 @@ public class SQLRead extends SQLPerformer implements Read {
                 System.out.println(e.getMessage());
             }
         }
-        return contacts;
+        ContactArrayContainer.setContactsList(contacts);
     }
 
     // Genererar listan som returneras

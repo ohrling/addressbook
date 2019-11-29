@@ -1,10 +1,8 @@
 package dbWorker;
 
-import model.Contact;
-
-import java.util.List;
 import java.util.Map;
 
 interface Read extends SQL {
-    List<Contact> read(Map<String, String> searchValues);
+    void read(Map<String, String> searchValues);
+
 }

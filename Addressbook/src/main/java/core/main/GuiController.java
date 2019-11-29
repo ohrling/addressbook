@@ -1,14 +1,13 @@
 package core.main;
 
-import dbWorker.SQLDelete;
-import dbWorker.SQLPerformer;
-import dbWorker.SQLRead;
-import dbWorker.SQLUndoLastDelete;
+import core.singletons.ContactArrayContainer;
 import core.singletons.MessageContainer;
 import core.singletons.ObjectPasser;
+import dbWorker.SQLDelete;
+import dbWorker.SQLRead;
+import dbWorker.SQLUndoLastDelete;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,32 +36,23 @@ public class GuiController implements Initializable {
     @FXML private Label moreInfoFirstNameLabelInfo, moreInfoLastNameLabelInfo, moreInfoEmailLabelInfo, moreInfoPhoneNrLabelInfo, moreInfoCompanyLabelInfo;
     @FXML private ListView<Contact> addressBookListView;
 
-    private ObservableList<Contact> contactsList = FXCollections.observableArrayList();
     private Map<String,String> searchValues = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         MessageContainer.getRightLabelMessage().addListener((observable, oldValue, newValue) -> rightLabel.setText(newValue));
-        // Initierar och skapar databasen om denne inte finns
-        // TODO: 2019-11-22 Kolla så att detta funkar när databasen inte existerar!
-        new SQLPerformer() {
-            @Override
-            public void init() {
-                super.init();
-            }
-        };
+        ContactArrayContainer.getContacts().addListener((ListChangeListener<Contact>) change -> addressBookListView.setItems(ContactArrayContainer.getContacts()));
         loadData();
     }
 
     private void loadData() {
         // Laddar data från databasen baserat på searchValues
-        contactsList.removeAll();
         addressBookListView.getItems().clear();
-        contactsList.clear();
 
         SQLRead read = new SQLRead();
-        contactsList.addAll(read.read(searchValues)); // TODO: 2019-11-22 Ska Read returnera en observable list?
-        addressBookListView.setItems(contactsList);
+        // Initierar och skapar databasen om denne inte finns
+        read.init();
+        read.read(searchValues);
 
         // Visar mer info när man klickar på post
         addressBookListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {

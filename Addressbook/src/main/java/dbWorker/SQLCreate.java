@@ -1,11 +1,10 @@
 package dbWorker;
 
+import core.singletons.ContactArrayContainer;
 import core.singletons.MessageContainer;
-import model.Contact;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 // Skapar en ny rad i databasen, eller återtar raderandet om telefonnumret existerar sedan tidigare
@@ -17,8 +16,9 @@ public class SQLCreate extends SQLPerformer implements Create {
         SQLRead read = new SQLRead();
         Map<String, String> check = new HashMap<>();
         check.put("phoneNumber", phoneNr);
-        List<Contact> existingContacts = read.read(check);
-        if(existingContacts.isEmpty()) {
+        //List<Contact> existingContacts = read.read(check);
+        read.read(check);
+        if(ContactArrayContainer.getContacts().isEmpty()) {
             stmt = null;
             try {
                 String INSERT_INTO = "INSERT INTO ContactsList (firstName, lastName, email, phoneNumber, company, isDeleted) VALUES (?, ?, ?, ?, ?, ?);";
@@ -39,7 +39,7 @@ public class SQLCreate extends SQLPerformer implements Create {
             }
         } else {
             SQLUpdate update = new SQLUpdate();
-            check.put("id", String.valueOf(existingContacts.get(0).getIdNr()));
+            check.put("id", String.valueOf(ContactArrayContainer.getContacts().get(0).getIdNr()));
             check.put("firstName", firstName);
             check.put("lastName", lastName);
             check.put("email", email);
