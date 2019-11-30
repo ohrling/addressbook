@@ -12,12 +12,14 @@ import java.util.Map;
 public class SQLRead extends SQLPerformer implements Read {
     private List<Contact> contacts = new ArrayList<>();
 
+
+
     @Override
     public void read(Map<String,String> searchValues) {
-        // Om searchValues är null så returneras alla kontakter som inte är raderade
+        // Om searchValues är null så returneras alla kontakter som inte är raderade sorterat i efternamnets bokstavsordning
         if(searchValues == null || searchValues.isEmpty()){
             try {
-                stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0;");
+                stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY lastName COLLATE NOCASE ASC;");
                 generateContactList(stmt.executeQuery());
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -75,4 +77,22 @@ public class SQLRead extends SQLPerformer implements Read {
                     isDeleted));
         }
     }
+
+    public void readOrderedByFirstName(){
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY firstName COLLATE NOCASE ASC;");
+            generateContactList(stmt.executeQuery());
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+    }
+    public void readOrderedByCompany() {
+        try {
+            stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY company COLLATE NOCASE ASC;");
+            generateContactList(stmt.executeQuery());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
