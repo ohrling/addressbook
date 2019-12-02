@@ -13,11 +13,10 @@ public class SQLRead extends SQLPerformer implements Read {
     private List<Contact> contacts = new ArrayList<>();
 
 
-
     @Override
-    public void read(Map<String,String> searchValues) {
+    public void read(Map<String, String> searchValues) {
         // Om searchValues är null så returneras alla kontakter som inte är raderade sorterat i efternamnets bokstavsordning
-        if(searchValues == null || searchValues.isEmpty()){
+        if (searchValues == null || searchValues.isEmpty()) {
             try {
                 stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY lastName COLLATE NOCASE ASC;");
                 generateContactList(stmt.executeQuery());
@@ -78,14 +77,16 @@ public class SQLRead extends SQLPerformer implements Read {
         }
     }
 
-    public void readOrderedByFirstName(){
+    public void readOrderedByFirstName() {
         try {
             stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY firstName COLLATE NOCASE ASC;");
             generateContactList(stmt.executeQuery());
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        ContactArrayContainer.setContactsList(contacts);
     }
+
     public void readOrderedByCompany() {
         try {
             stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY company COLLATE NOCASE ASC;");
@@ -93,6 +94,20 @@ public class SQLRead extends SQLPerformer implements Read {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+
+        ContactArrayContainer.setContactsList(contacts);
     }
 
+    //Söker efter förekomsten av en String i alla kolumner och alla poster i databasen.
+    public void genericDatabaseSearch(String searchString) {
+        //Bygger söksträngen med regex för att kunna användas med LIKE sökningen i SQL-statement
+        String searchValue=(new StringBuilder()).append("'%").append(searchString).append("%'").toString();
+       try {
+          stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE lastName LIKE "+searchValue+" OR firstName LIKE "+searchValue+" OR company LIKE "+searchValue+" OR phoneNumber LIKE "+searchValue+" ");
+          generateContactList(stmt.executeQuery());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        ContactArrayContainer.setContactsList(contacts);
+    }
 }
