@@ -19,7 +19,7 @@ public class SQLRead extends SQLPerformer implements Read {
         // Om searchValues är null så returneras alla kontakter som inte är raderade sorterat i efternamnets bokstavsordning
         if(searchValues == null || searchValues.isEmpty()){
             try {
-                stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY lastName COLLATE NOCASE ASC;");
+                stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY lastName COLLATE NOCASE DESC;");
                 generateContactList(stmt.executeQuery());
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -30,11 +30,17 @@ public class SQLRead extends SQLPerformer implements Read {
             List<String> keys = new ArrayList<>();
             for (Map.Entry<String, String> entry :
                     searchValues.entrySet()) {
-                keys.add(entry.getKey());
+                if(!entry.getKey().equals("sort"))
+                    keys.add(entry.getKey());
             }
+            // TODO: 2019-12-02 Denna if-sats måste åtgärdas!
             if (keys.size() == 1) {
+                //sqlCall.append(" WHERE ");
                 sqlCall.append(keys.get(0)).append(" = ?");
-            } else {
+            } else if(keys.size() == 0) {
+                //sqlCall.append(" WHERE ");
+            } else if(keys.size() > 1) {
+                //sqlCall.append(" WHERE ");
                 for (String key :
                         keys) {
                     if (keys.indexOf(key) == 0) {
@@ -46,8 +52,9 @@ public class SQLRead extends SQLPerformer implements Read {
                         sqlCall.append(" = ?");
                     }
                 }
+                sqlCall.append(" AND ");
             }
-            sqlCall.append(" AND isDeleted = 0 ORDER BY lastUpdated DESC;");
+            sqlCall.append(" isDeleted = 0 ORDER BY ").append(searchValues.get("sort")).append( " COLLATE NOCASE ASC;");
             System.out.println(sqlCall.toString());
             try {
                 stmt = connection.prepareStatement(sqlCall.toString());
@@ -78,7 +85,7 @@ public class SQLRead extends SQLPerformer implements Read {
         }
     }
 
-    public void readOrderedByFirstName(){
+    /*public void readOrderedByFirstName(){
         try {
             stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY firstName COLLATE NOCASE ASC;");
             generateContactList(stmt.executeQuery());
@@ -93,6 +100,6 @@ public class SQLRead extends SQLPerformer implements Read {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
+    }*/
 
 }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.Scene?>
 <?import javafx.scene.text.Font?>
 <?import javafx.stage.Stage?>
-<?import javafx.scene.Scene?>
+<?import java.lang.String?>
 <Stage title="%fxml.maintitle.text" fx:controller="core.main.GuiController"
        xmlns:fx="http://javafx.com/fxml/1">
     <scene>
@@ -42,7 +44,18 @@
                             <TextField fx:id="email" accessibleText="E-mail" layoutY="76.0" promptText="%fxml.email.text" font="$x5" />
                             <TextField fx:id="phoneNr" accessibleText="Phonenumber" layoutY="113.0" promptText="%fxml.phonenr.text" font="$x5" />
                             <TextField fx:id="company" accessibleText="Company" layoutY="150.0" promptText="%fxml.company.text" font="$x5" />
-                            <Button fx:id="searchBtn" accessibleText="Search for posts" defaultButton="true" layoutX="113.0" layoutY="190.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" font="$x5" />
+                            <ChoiceBox fx:id="sortChoice" layoutY="190.0" prefWidth="150" value="Välj sortering">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="1. Förnamn" />
+                                        <String fx:value="2. Efternamn" />
+                                        <String fx:value="3. Email" />
+                                        <String fx:value="4. Telefonnummer" />
+                                        <String fx:value="5. Företag" />
+                                    </FXCollections>
+                                </items>
+                            </ChoiceBox>
+                            <Button fx:id="searchBtn" prefWidth="100" accessibleText="Search for posts" defaultButton="true" layoutX="50.0" layoutY="230.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" font="$x5" />
                         </Group>
                     </AnchorPane>
                     <AnchorPane>

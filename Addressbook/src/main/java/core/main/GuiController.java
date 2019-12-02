@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -30,6 +31,7 @@ import java.util.ResourceBundle;
 // Ritar upp och hanterar händelser i main-fönstret utifrån addressbook.fxml
 public class GuiController implements Initializable {
 
+    @FXML private ChoiceBox<String> sortChoice;
     @FXML private Label rightLabel;
     @FXML private Label leftLabel;
     @FXML private TextField firstName, lastName, email, phoneNr, company;
@@ -77,7 +79,7 @@ public class GuiController implements Initializable {
         // Genererar sökvärdena
         searchValues = new HashMap<>();
         if(!firstName.getText().isEmpty()) {
-               searchValues.put("firstName", firstName.getText().trim());
+            searchValues.put("firstName", firstName.getText().trim());
         }
         if(!lastName.getText().isEmpty()){
             searchValues.put("lastName", lastName.getText().trim());
@@ -90,6 +92,27 @@ public class GuiController implements Initializable {
         }
         if(!company.getText().isEmpty()) {
             searchValues.put("company", company.getText().trim());
+        }
+        if(sortChoice.getValue().isEmpty()) {
+            searchValues.put("sort", "lastName");
+        } else {
+            switch (sortChoice.getValue().charAt(0)) {
+                case '1':
+                    searchValues.put("sort", "firstName");
+                    break;
+                case '3':
+                    searchValues.put("sort", "email");
+                    break;
+                case '4':
+                    searchValues.put("sort", "phoneNumber");
+                    break;
+                case '5':
+                    searchValues.put("sort", "company");
+                    break;
+                default:
+                    searchValues.put("sort", "lastName");
+                    break;
+            }
         }
     }
 
@@ -110,9 +133,12 @@ public class GuiController implements Initializable {
 
     @FXML
     private void handleDelete(ActionEvent event) {
-        SQLDelete delete = new SQLDelete();
-        delete.delete(ObjectPasser.contact);
-        delete.closeCon();
+        if (ObjectPasser.contact != null) {
+            SQLDelete delete = new SQLDelete();
+            delete.delete(ObjectPasser.contact);
+            delete.closeCon();
+            ObjectPasser.contact = null;
+        }
         loadData();
     }
 
@@ -131,7 +157,8 @@ public class GuiController implements Initializable {
         loadData();
     }
 
-    public void closeApplication(ActionEvent event) {
+    @FXML
+    private void closeApplication(ActionEvent event) {
         Platform.exit();
     }
 }
