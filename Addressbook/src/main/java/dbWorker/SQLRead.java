@@ -98,13 +98,58 @@ public class SQLRead extends SQLPerformer implements Read {
         ContactArrayContainer.setContactsList(contacts);
     }
 
-    //Söker efter förekomsten av en String i alla kolumner och alla poster i databasen.
-    public void genericDatabaseSearch(String searchString) {
-        //Bygger söksträngen med regex för att kunna användas med LIKE sökningen i SQL-statement
-        String searchValue=(new StringBuilder()).append("'%").append(searchString).append("%'").toString();
-       try {
-          stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE lastName LIKE "+searchValue+" OR firstName LIKE "+searchValue+" OR company LIKE "+searchValue+" OR phoneNumber LIKE "+searchValue+" ");
-          generateContactList(stmt.executeQuery());
+
+
+    public void genericDatabaseSearch(String searchValues) {
+
+        //om inget sökvärde, hämta allt
+        if (searchValues == null || searchValues.isEmpty()) {
+            try {
+                stmt = connection.prepareStatement("SELECT * FROM ContactsList WHERE isDeleted = 0 ORDER BY lastName COLLATE NOCASE ASC;");
+                generateContactList(stmt.executeQuery());
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        // om ett eller flera sökvärde dela upp söksträngen i substrings
+        String[] searchValuesDivided;
+        String delimeter = " ";
+        searchValuesDivided = searchValues.trim().split(delimeter);
+
+        //antalet sökord
+        int numOfSearchValues = searchValuesDivided.length;
+
+        //påbörja på query
+        String sqlString = "SELECT * FROM ContactsList WHERE ";
+
+        // om användaren enbart angivet ett sökvärde
+        if (numOfSearchValues == 1) {
+            //...sök på det värdet
+            String searchValue = (new StringBuilder()).append("'%").append(searchValuesDivided[0]).append("%'").toString();
+            sqlString += "lastName LIKE " + searchValue + " OR firstName LIKE " + searchValue + " OR company LIKE " + searchValue + " OR phoneNumber LIKE " + searchValue + " ";
+        }
+        else
+            { // Om användaren sökt på flera värden adderas varje sökvärde till query i for loopen
+            for (int i = 0; i < numOfSearchValues; i++) {
+
+                if (i == numOfSearchValues - 1) {
+                    //den sista ska avslutas med ;
+                    String searchValue = (new StringBuilder()).append("'%").append(searchValuesDivided[i]).append("%'").toString();
+                    sqlString += "(lastName LIKE " + searchValue + " OR firstName LIKE " + searchValue + " OR company LIKE " + searchValue + " OR email LIKE " + searchValue + " OR phoneNumber LIKE " + searchValue + ")";
+                    sqlString += ";";
+                    System.out.println(i + " : " + sqlString);
+                } else {
+                    String searchValue = (new StringBuilder()).append("'%").append(searchValuesDivided[i]).append("%'").toString();
+                    sqlString += "(lastName LIKE " + searchValue + " OR firstName LIKE " + searchValue + " OR company LIKE " + searchValue + " OR email LIKE " + searchValue + " OR phoneNumber LIKE " + searchValue + ")";
+                    sqlString += " AND ";
+                    System.out.println(i + " : " + sqlString);
+                }
+            }
+        }
+
+        try {
+            stmt = connection.prepareStatement(sqlString);
+            generateContactList(stmt.executeQuery());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
