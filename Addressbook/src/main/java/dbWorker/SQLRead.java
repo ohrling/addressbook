@@ -132,6 +132,7 @@ public class SQLRead extends SQLPerformer implements Read {
             { // Om användaren sökt på flera värden adderas varje sökvärde till query i for loopen
             for (int i = 0; i < numOfSearchValues; i++) {
 
+
                 if (i == numOfSearchValues - 1) {
                     //den sista ska avslutas med ;
                     String searchValue = (new StringBuilder()).append("'%").append(searchValuesDivided[i]).append("%'").toString();
