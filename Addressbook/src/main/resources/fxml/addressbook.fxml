@@ -19,7 +19,7 @@
                     </Menu>
                 </MenuBar>
                 <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="199.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
-                    <Label fx:id="searchLabel" alignment="CENTER" layoutX="175.0" layoutY="35.0" text="%fxml.labelsearch.text">
+                    <Label fx:id="searchLabel" alignment="CENTER" layoutX="172.0" layoutY="35.0" text="%fxml.labelsearch.text">
                         <font>
                             <Font size="14.0" name="Roboto" />
                         </font>

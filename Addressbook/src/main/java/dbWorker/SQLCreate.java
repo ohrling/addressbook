@@ -16,8 +16,8 @@ public class SQLCreate extends SQLPerformer implements Create {
         SQLRead read = new SQLRead();
         Map<String, String> check = new HashMap<>();
         check.put("phoneNumber", phoneNr);
-        //List<Contact> existingContacts = read.read(check);
-        read.read(check);
+        read.read(phoneNr);
+        read.closeCon();
         if(ContactArrayContainer.getContacts().isEmpty()) {
             stmt = null;
             try {
@@ -46,6 +46,7 @@ public class SQLCreate extends SQLPerformer implements Create {
             check.put("company", company);
             check.put("isDeleted", "0");
             update.update(check);
+            update.closeCon();
         }
     }
 }
