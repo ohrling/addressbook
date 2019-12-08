@@ -67,6 +67,7 @@ public class DialogController implements Initializable {
             if(firstName.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Kontakten måste åtminstone ha ett förnamn");
+                alert.show();
             } else {
                 fields.put("firstName", firstName.getText());
                 fields.put("lastName", lastName.getText());
@@ -85,6 +86,8 @@ public class DialogController implements Initializable {
             }
         }
         // Refresh the Observable list
+        // TODO: 2019-12-04 Vart ska denna vara för att både ändring och skapande ska fungera? Skapande ska varna när firstname saknas...
+        //  Ska sedan skapad och ändrad contact hämtas från senast ändrad i db och visas i ObjectPasser?
         SQLRead read = new SQLRead();
         read.read(null);
         read.closeCon();

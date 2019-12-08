@@ -1,7 +1,6 @@
 package core.main;
 
 import core.singletons.ContactArrayContainer;
-import core.singletons.MessageContainer;
 import core.singletons.ObjectPasser;
 import dbWorker.SQLDelete;
 import dbWorker.SQLRead;
@@ -14,46 +13,48 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Contact;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 // Ritar upp och hanterar händelser i main-fönstret utifrån addressbook.fxml
 public class GuiController implements Initializable {
 
-    @FXML private Label rightLabel;
-    @FXML private Label leftLabel;
-    @FXML private TextField firstName, lastName, email, phoneNr, company;
-    @FXML private Label moreInfoFirstNameLabelInfo, moreInfoLastNameLabelInfo, moreInfoEmailLabelInfo, moreInfoPhoneNrLabelInfo, moreInfoCompanyLabelInfo;
-    @FXML private ListView<Contact> addressBookListView;
-
-    private Map<String,String> searchValues = null;
+    @FXML private TextField searchField;
+    @FXML private TreeView<String> treeView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        MessageContainer.getRightLabelMessage().addListener((observable, oldValue, newValue) -> rightLabel.setText(newValue));
-        ContactArrayContainer.getContacts().addListener((ListChangeListener<Contact>) change -> addressBookListView.setItems(ContactArrayContainer.getContacts()));
+        TreeItem<String> results = new TreeItem<>("Kontakter");
+
+        ContactArrayContainer.getContacts().addListener((ListChangeListener<Contact>) change -> {
+            for (Contact c :
+                    ContactArrayContainer.getContacts()) {
+                System.out.println(c.fullInfo());
+                TreeItem<String> info = new TreeItem<>(c.getFirstName() + " " + c.getLastName());
+                info.getChildren().add(new TreeItem<>("Företag: " + c.getCompany()));
+                info.getChildren().add(new TreeItem<>("Telefonnummer: " + c.getPhoneNumber()));
+                info.getChildren().add(new TreeItem<>("E-mail: " + c.getEmail()));
+                results.getChildren().add(info);
+            }
+            treeView.setRoot(results);
+        });
         loadData();
     }
 
     private void loadData() {
-        // Laddar data från databasen baserat på searchValues
-        addressBookListView.getItems().clear();
-
         SQLRead read = new SQLRead();
         // Initierar och skapar databasen om denne inte finns
         read.init();
-        read.read(searchValues);
-
+        read.genericDatabaseSearch(searchField.getText());
+/*
         // Visar mer info när man klickar på post
         addressBookListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue != null) {
@@ -64,33 +65,13 @@ public class GuiController implements Initializable {
                 moreInfoPhoneNrLabelInfo.setText(ObjectPasser.contact.getPhoneNumber());
                 moreInfoCompanyLabelInfo.setText(ObjectPasser.contact.getCompany());
             }
-        });
+        });*/
         read.closeCon();
     }
 
     @FXML protected void handleSearch(ActionEvent event) {
-        getSearchValues();
+        treeView.setRoot(null);
         loadData();
-    }
-
-    private void getSearchValues() {
-        // Genererar sökvärdena
-        searchValues = new HashMap<>();
-        if(!firstName.getText().isEmpty()) {
-               searchValues.put("firstName", firstName.getText().trim());
-        }
-        if(!lastName.getText().isEmpty()){
-            searchValues.put("lastName", lastName.getText().trim());
-        }
-        if(!email.getText().isEmpty()){
-            searchValues.put("email", email.getText().trim());
-        }
-        if(!phoneNr.getText().isEmpty()) {
-            searchValues.put("phoneNumber", phoneNr.getText().trim());
-        }
-        if(!company.getText().isEmpty()) {
-            searchValues.put("company", company.getText().trim());
-        }
     }
 
     @FXML

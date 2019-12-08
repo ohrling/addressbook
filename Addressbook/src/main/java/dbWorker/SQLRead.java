@@ -12,7 +12,6 @@ import java.util.Map;
 public class SQLRead extends SQLPerformer implements Read {
     private List<Contact> contacts = new ArrayList<>();
 
-
     @Override
     public void read(Map<String, String> searchValues) {
         // Om searchValues är null så returneras alla kontakter som inte är raderade sorterat i efternamnets bokstavsordning
