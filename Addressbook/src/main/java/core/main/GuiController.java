@@ -28,12 +28,12 @@ import java.util.ResourceBundle;
 // Ritar upp och hanterar händelser i main-fönstret utifrån addressbook.fxml
 public class GuiController implements Initializable {
 
+    @FXML private TreeItem<Object> results;
     @FXML private TextField searchField;
     @FXML private TreeView<Object> treeView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        TreeItem<Object> results = new TreeItem<>("Kontakter");
 
         ContactArrayContainer.getContacts().addListener((ListChangeListener<Contact>) change -> {
             for (Contact c :

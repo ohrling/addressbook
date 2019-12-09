@@ -10,25 +10,38 @@
     <scene>
         <Scene>
             <VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-                <MenuBar VBox.vgrow="NEVER">
-                    <Menu text="Arkiv">
-                        <MenuItem fx:id="newContact" text="%fxml.addnewcontactmenu.text" onAction="#addNewContact"/>
-                        <MenuItem fx:id="undoLastDelete" text="%fxml.undolastdeletemenu.text" onAction="#undoLastDelete"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem text="%fxml.close.text" onAction="#closeApplication"/>
-                    </Menu>
-                </MenuBar>
                 <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="199.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
-                    <Label fx:id="searchLabel" alignment="CENTER" layoutX="172.0" layoutY="35.0" text="%fxml.labelsearch.text">
+                    <Button text="%fxml.menu.addnewcontact.text" onAction="#addNewContact" layoutX="5" layoutY="70" >
                         <font>
-                            <Font size="14.0" name="Roboto" />
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </Button>
+                    <Button text="%fxml.menu.undolastdelete.text" onAction="#undoLastDelete" layoutX="90" layoutY="70" >
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </Button>
+                    <Label fx:id="searchLabel" alignment="CENTER" layoutX="225.0" layoutY="32.0" text="%fxml.labelsearch.text">
+                        <font>
+                            <Font size="16.0" name="Roboto" />
                         </font>
                     </Label>
-                    <TextField fx:id="searchField" layoutX="244.0" layoutY="32.0" />
-                    <Button fx:id="searchBtn" alignment="CENTER" layoutX="409.0" layoutY="32.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" defaultButton="true" />
+                    <TextField fx:id="searchField" layoutX="315.0" layoutY="32.0" >
+                        <tooltip><Tooltip text="%fxml.tooltip.search"/></tooltip>
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </TextField>
+                    <Button fx:id="searchBtn" alignment="CENTER" layoutX="480.0" layoutY="32.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" defaultButton="true" >
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </Button>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="603.0" prefWidth="800.0">
-                    <TreeView fx:id="treeView" prefHeight="490.0" prefWidth="800.0" showRoot="false" />
+                    <TreeView fx:id="treeView" prefHeight="490.0" prefWidth="800.0" showRoot="false">
+                        <TreeItem value="Kontakter" fx:id="results"/>
+                    </TreeView>
                 </AnchorPane>
             </VBox>
         </Scene>
