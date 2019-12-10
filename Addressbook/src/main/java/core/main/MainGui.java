@@ -1,5 +1,7 @@
 package core.main;
 
+import com.github.javafaker.Faker;
+import dbWorker.SQLCreate;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -23,8 +25,26 @@ public class MainGui extends Application {
             Stage main = loader.load();
             main.initOwner(primaryStage);
             main.show();
+            addSampleContacts();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+    private void addSampleContacts()  {
+
+        SQLCreate creator = new SQLCreate();
+        for (int i = 0; i<100; i++ ){
+            Faker faker = new Faker();
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String email = faker.internet().emailAddress();
+            String phoneNumber = faker.phoneNumber().phoneNumber();
+            String company = faker.company().name();
+
+            creator.create(firstName, lastName, email, phoneNumber, company);
+        }
+    }
 }
+
