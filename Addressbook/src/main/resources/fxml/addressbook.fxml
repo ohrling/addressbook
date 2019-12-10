@@ -37,6 +37,11 @@
                             <Font size="12" name="Roboto" />
                         </font>
                     </Button>
+                    <Button alignment="CENTER" layoutX="650" layoutY="10" text="%fxml.addcontactbtn.text" onAction="#addSampleContacts">
+                        <font>
+                            <Font size="9" name="Roboto"/>
+                        </font>
+                    </Button>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="603.0" prefWidth="800.0">
                     <TreeView fx:id="treeView" prefHeight="490.0" prefWidth="800.0" showRoot="false">
