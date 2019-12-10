@@ -1,7 +1,6 @@
 package core.editcontact;
 
 import dbWorker.SQLCreate;
-import dbWorker.SQLRead;
 import dbWorker.SQLUpdate;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,12 +84,6 @@ public class DialogController implements Initializable {
                 create.closeCon();
             }
         }
-        // Refresh the Observable list
-        // TODO: 2019-12-04 Vart ska denna vara för att både ändring och skapande ska fungera? Skapande ska varna när firstname saknas...
-        //  Ska sedan skapad och ändrad contact hämtas från senast ändrad i db och visas i ObjectPasser?
-        SQLRead read = new SQLRead();
-        read.read(null);
-        read.closeCon();
         Stage stage = (Stage) doneBtn.getScene().getWindow();
         stage.close();
     }
