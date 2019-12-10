@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.text.Font?>
+<?import javafx.stage.Stage?>
+<Stage title="%fxml.maintitle.text" fx:controller="core.main.GuiController"
+       xmlns:fx="http://javafx.com/fxml/1">
+    <scene>
+        <Scene>
+            <VBox prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+                <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="199.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
+                    <Button text="%fxml.menu.addnewcontact.text" onAction="#addNewContact" layoutX="5" layoutY="70" >
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </Button>
+                    <Button text="%fxml.menu.undolastdelete.text" onAction="#undoLastDelete" layoutX="90" layoutY="70" >
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </Button>
+                    <Label fx:id="searchLabel" alignment="CENTER" layoutX="225.0" layoutY="32.0" text="%fxml.labelsearch.text">
+                        <font>
+                            <Font size="16.0" name="Roboto" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="searchField" layoutX="315.0" layoutY="32.0" >
+                        <tooltip><Tooltip text="%fxml.tooltip.search"/></tooltip>
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </TextField>
+                    <Button fx:id="searchBtn" alignment="CENTER" layoutX="480.0" layoutY="32.0" mnemonicParsing="false" text="%fxml.searchbtn.text" onAction="#handleSearch" defaultButton="true" >
+                        <font>
+                            <Font size="12" name="Roboto" />
+                        </font>
+                    </Button>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="603.0" prefWidth="800.0">
+                    <TreeView fx:id="treeView" prefHeight="490.0" prefWidth="800.0" showRoot="false">
+                        <TreeItem value="Kontakter" fx:id="results"/>
+                    </TreeView>
+                </AnchorPane>
+            </VBox>
+        </Scene>
+    </scene>
+</Stage>
