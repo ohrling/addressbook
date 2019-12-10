@@ -1,7 +1,5 @@
 package dbWorker;
 
-import core.singletons.MessageContainer;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +11,7 @@ public class SQLUpdate extends SQLPerformer implements Update {
 
     @Override
     public void update(Map<String,String> searchValues) {
+        System.out.println(searchValues);
         StringBuilder updateCall = new StringBuilder("UPDATE ContactsList SET ");
         int id = Integer.parseInt(searchValues.get("id"));
         List<String> keys = new ArrayList<>();
@@ -35,7 +34,6 @@ public class SQLUpdate extends SQLPerformer implements Update {
             }
         }
         updateCall.append(" WHERE id = ? ;");
-        System.out.println(updateCall.toString());
         try {
             stmt = connection.prepareStatement(updateCall.toString());
             for (String key :
@@ -46,12 +44,10 @@ public class SQLUpdate extends SQLPerformer implements Update {
                     stmt.setString((keys.indexOf(key) + 1), searchValues.get(key));
             }
             stmt.setInt(keys.size() + 1, id);
-            System.out.println(updateCall.toString());
-            System.out.println("Antal uppdaterade rader: " + stmt.executeUpdate());
-            MessageContainer.setRightLabelMessage(searchValues.get("firstname") + " är uppdaterad.");
+            stmt.execute();
         } catch (SQLException e) {
+            System.out.println("Kunde inte updatera kontakten i databasen.");
             System.out.println(e.getMessage());
-            MessageContainer.setRightLabelMessage("Kunde inte updatera kontakten i databasen.");
         }
     }
 }

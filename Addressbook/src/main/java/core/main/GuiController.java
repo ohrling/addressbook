@@ -80,6 +80,7 @@ public class GuiController implements Initializable {
     // TODO: 2019-12-08 Av någon anledning så uppdateras inte treeview vid just denna funktion!?
     @FXML
     private void showContactDialog() {
+        treeView.getRoot().getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addnew.fxml"), MainGui.bundle);
         try {
             Parent parent = loader.load();
@@ -87,11 +88,10 @@ public class GuiController implements Initializable {
             stage.setScene(new Scene(parent));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
+            stage.setOnHiding(windowEvent -> loadData());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        treeView.getRoot().getChildren().clear();
-        loadData();
     }
 
     private void handleDelete() {

@@ -1,7 +1,5 @@
 package dbWorker;
 
-import core.singletons.MessageContainer;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -13,11 +11,10 @@ public class SQLUndoLastDelete extends SQLPerformer implements UndoLast {
             ResultSet rs = stmt.executeQuery();
             int id = rs.getInt("id");
             stmt.close();
-            // TODO: 2019-11-22 Lyckas inte få det att fungera utan att stänga stmt, någon annan idé?
             stmt = connection.prepareStatement("UPDATE ContactsList SET isDeleted = 0 WHERE id = " + id + ";");
             return stmt.execute();
         } catch (SQLException e) {
-            MessageContainer.setRightLabelMessage(e.getMessage());
+            System.out.println(e.getMessage());
             return false;
         }
     }

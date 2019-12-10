@@ -1,7 +1,5 @@
 package dbWorker;
 
-import core.singletons.MessageContainer;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,9 +24,9 @@ public abstract class SQLPerformer implements SQL {
 
     public void init() {
         if(createTables())
-            MessageContainer.setRightLabelMessage("Databasen initierad");
+            System.out.println("Databasen initierad");
         else {
-            MessageContainer.setRightLabelMessage("Fel vid initiering av databasen");
+            System.out.println("Fel vid initiering av databasen");
         }
     }
 
@@ -38,10 +36,10 @@ public abstract class SQLPerformer implements SQL {
                 stmt.close();
             if(stmt != null)
                 connection.close();
-            MessageContainer.setRightLabelMessage("Anslutning till databasen stängd");
+            System.out.println("Anslutning till databasen stängd");
         } catch (SQLException e) {
+            System.out.println("Fel vid stängning av anslutning till databasen");
             e.printStackTrace();
-            MessageContainer.setRightLabelMessage("Fel vid stängning av anslutning till databasen");
         }
     }
 

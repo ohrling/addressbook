@@ -1,10 +1,11 @@
 
 *.db
 
-/output
+/output/
 
 /Addressbook/target
 
 application.properties
 
 .idea
+/Addressbook/target/
