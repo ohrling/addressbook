@@ -35,7 +35,7 @@ public class DialogController implements Initializable {
     private final static String defaultCSSStyle = "-fx-border-width: 0px ;";
     private static final int FIRST_NAME = 1, LAST_NAME = 2, EMAIL = 3, PHONE_NUMBER = 4;
     private static final boolean doneBtnEnabled = false;
-    private static boolean validFirstName = false, validPhoneNumber = false, validEmail = false;
+    private static boolean validFirstName = false, validPhoneNumber = true, validEmail = true;
 
     private Map<String, String> fields = new HashMap<>();
 
@@ -138,36 +138,27 @@ public class DialogController implements Initializable {
             TextField[] temp = new TextField[]{firstName, lastName, email, phoneNumber, company};
             for (TextField field :
                     temp) {
-                if (field.getText() == null) {
-                    System.out.println(field.getId() + " var tomt.");
-                } else {
-                    if (! field.getText().isEmpty())
-                        fields.put(field.getId(), field.getText());
-                }
+                    fields.put(field.getId(), field.getText());
             }
             System.out.println(fields.toString());
             SQLUpdate update = new SQLUpdate();
             update.update(fields);
             update.closeCon();
         } else {
-            if (firstName.getText().isEmpty()) {
-
-            } else {
-                fields.put("firstName", firstName.getText());
-                fields.put("lastName", lastName.getText());
-                fields.put("email", email.getText());
-                fields.put("phoneNumber", phoneNumber.getText());
-                fields.put("company", company.getText());
-                SQLCreate create = new SQLCreate();
-                create.create(
-                        firstName.getText().trim(),
-                        lastName.getText().trim(),
-                        email.getText().trim(),
-                        phoneNumber.getText().trim(),
-                        company.getText().trim()
-                );
-                create.closeCon();
-            }
+            fields.put("firstName", firstName.getText());
+            fields.put("lastName", lastName.getText());
+            fields.put("email", email.getText());
+            fields.put("phoneNumber", phoneNumber.getText());
+            fields.put("company", company.getText());
+            SQLCreate create = new SQLCreate();
+            create.create(
+                    firstName.getText().trim(),
+                    lastName.getText().trim(),
+                    email.getText().trim(),
+                    phoneNumber.getText().trim(),
+                    company.getText().trim()
+            );
+            create.closeCon();
         }
         Stage stage = (Stage) doneBtn.getScene().getWindow();
         stage.close();
