@@ -46,8 +46,7 @@ public abstract class SQLPerformer implements SQL {
     private boolean createTables() {
         try {
             //här skapas tabellen ContactsList
-            String CREATE_DB = "CREATE TABLE IF NOT EXISTS ContactsList(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,firstName varchar(40) COLLATE NOCASE,lastName varchar(40) COLLATE NOCASE, email varchar(100) COLLATE NOCASE,phoneNumber varchar(100) COLLATE NOCASE UNIQUE, company varchar(100) COLLATE NOCASE, isDeleted tinyint(1), lastUpdated DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')));";
-          //  String CREATE_DB = "CREATE TABLE IF NOT EXISTS ContactsList(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,firstName varchar(40) ,lastName varchar(40), email varchar(100),phoneNumber varchar(100) UNIQUE, company varchar(100), isDeleted tinyint(1), lastUpdated DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')));";
+            String CREATE_DB = "CREATE TABLE IF NOT EXISTS ContactsList(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,firstName varchar(40) COLLATE NOCASE,lastName varchar(40) COLLATE NOCASE, email varchar(100) COLLATE NOCASE,phoneNumber varchar(100) COLLATE NOCASE, company varchar(100) COLLATE NOCASE, isDeleted tinyint(1), lastUpdated DATETIME NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now', 'localtime')));";
 
             stmt = connection.prepareStatement(CREATE_DB);
             stmt.execute();

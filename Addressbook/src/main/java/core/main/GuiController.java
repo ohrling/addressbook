@@ -1,11 +1,12 @@
 package core.main;
 
+import com.github.javafaker.Faker;
 import core.singletons.ContactArrayContainer;
 import core.singletons.ObjectPasser;
+import dbWorker.SQLCreate;
 import dbWorker.SQLDelete;
 import dbWorker.SQLRead;
 import dbWorker.SQLUndoLastDelete;
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,7 +35,6 @@ public class GuiController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         ContactArrayContainer.getContacts().addListener((ListChangeListener<Contact>) change -> {
             for (Contact c :
                     ContactArrayContainer.getContacts()) {
@@ -77,13 +77,12 @@ public class GuiController implements Initializable {
         loadData();
     }
 
-    // TODO: 2019-12-08 Av någon anledning så uppdateras inte treeview vid just denna funktion!?
     @FXML
     private void showContactDialog() {
-        treeView.getRoot().getChildren().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addnew.fxml"), MainGui.bundle);
         try {
             Parent parent = loader.load();
+            treeView.getRoot().getChildren().clear();
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -118,7 +117,22 @@ public class GuiController implements Initializable {
         loadData();
     }
 
-    public void closeApplication(ActionEvent event) {
-        Platform.exit();
+    @FXML private void addSampleContacts()  {
+        SQLCreate creator = new SQLCreate();
+        creator.init();
+        for (int i = 0; i < 20; i++ ){
+            Faker faker = new Faker();
+            String firstName = faker.name().firstName();
+            String lastName = faker.name().lastName();
+            String email = faker.internet().emailAddress();
+            String phoneNumber = faker.phoneNumber().phoneNumber();
+            String company = faker.company().name();
+
+            creator.create(firstName, lastName, email, phoneNumber, company);
+            System.out.println("Skapade " + firstName + " " + lastName);
+        }
+        creator.closeCon();
+        treeView.getRoot().getChildren().clear();
+        loadData();
     }
 }
