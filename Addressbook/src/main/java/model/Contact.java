@@ -72,10 +72,10 @@ public class Contact {
     public String fullInfo() {
         return MessageFormat.format(
                 "Namn: {0} {1}\n" +
-                "Företag: {2} \n" +
-                "Telefonnummer: {3} \n" +
-                "E-mail: {4}",
-                firstName,lastName,company, phoneNumber,email);
+                        "Företag: {2} \n" +
+                        "Telefonnummer: {3} \n" +
+                        "E-mail: {4}",
+                firstName, lastName, company, phoneNumber, email);
     }
 
     @Override

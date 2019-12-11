@@ -19,7 +19,6 @@ public class SQLCreate extends SQLPerformer implements Create {
             stmt.execute();
         } catch (SQLException e) {
             System.out.println("Fel vid sparande av kontakt.");
-            System.out.println(e.getMessage());
         }
 
     }

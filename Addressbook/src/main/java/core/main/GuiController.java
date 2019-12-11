@@ -29,9 +29,12 @@ import java.util.ResourceBundle;
 // Ritar upp och hanterar händelser i main-fönstret utifrån addressbook.fxml
 public class GuiController implements Initializable {
 
-    @FXML private TreeItem<Object> results;
-    @FXML private TextField searchField;
-    @FXML private TreeView<Object> treeView;
+    @FXML
+    private TreeItem<Object> results;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private TreeView<Object> treeView;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,13 +44,11 @@ public class GuiController implements Initializable {
                 Button editBtn = new Button("Ändra");
                 editBtn.setOnAction(event -> {
                     ObjectPasser.contact = c;
-                    System.out.println(ObjectPasser.contact.fullInfo());
                     showContactDialog();
                 });
                 Button deleteBtn = new Button("Ta bort");
                 deleteBtn.setOnAction(event -> {
                     ObjectPasser.contact = c;
-                    System.out.println(ObjectPasser.contact.fullInfo());
                     handleDelete();
                 });
                 TreeItem<Object> info = new TreeItem<>(c.getFirstName() + " " + c.getLastName());
@@ -103,7 +104,7 @@ public class GuiController implements Initializable {
 
     @FXML
     private void addNewContact(ActionEvent event) {
-        if(ObjectPasser.contact != null)
+        if (ObjectPasser.contact != null)
             ObjectPasser.contact = null;
         showContactDialog();
     }
@@ -117,10 +118,11 @@ public class GuiController implements Initializable {
         loadData();
     }
 
-    @FXML private void addSampleContacts()  {
+    @FXML
+    private void addSampleContacts() {
         SQLCreate creator = new SQLCreate();
         creator.init();
-        for (int i = 0; i < 20; i++ ){
+        for (int i = 0; i < 20; i++) {
             Faker faker = new Faker();
             String firstName = faker.name().firstName();
             String lastName = faker.name().lastName();
@@ -129,7 +131,7 @@ public class GuiController implements Initializable {
             String company = faker.company().name();
 
             creator.create(firstName, lastName, email, phoneNumber, company);
-            System.out.println("Skapade " + firstName + " " + lastName);
+
         }
         creator.closeCon();
         treeView.getRoot().getChildren().clear();

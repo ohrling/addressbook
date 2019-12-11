@@ -23,7 +23,7 @@ public abstract class SQLPerformer implements SQL {
     }
 
     public void init() {
-        if(createTables())
+        if (createTables())
             System.out.println("Databasen initierad");
         else {
             System.out.println("Fel vid initiering av databasen");
@@ -32,9 +32,9 @@ public abstract class SQLPerformer implements SQL {
 
     public void closeCon() {
         try {
-            if(stmt != null)
+            if (stmt != null)
                 stmt.close();
-            if(stmt != null)
+            if (stmt != null)
                 connection.close();
             System.out.println("Anslutning till databasen stängd");
         } catch (SQLException e) {
@@ -62,8 +62,6 @@ public abstract class SQLPerformer implements SQL {
             return false;
         }
     }
-
-
 
 
 }

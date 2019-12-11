@@ -73,7 +73,7 @@ public class SQLRead extends SQLPerformer implements Read {
             }
 
             sqlCall.append(") ORDER BY lastUpdated DESC;");
-            System.out.println(sqlCall.toString());
+
             try {
                 stmt = connection.prepareStatement(sqlCall.toString());
                 generateContactList(stmt.executeQuery());

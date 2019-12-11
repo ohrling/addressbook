@@ -14,7 +14,7 @@ public class SQLUndoLastDelete extends SQLPerformer implements UndoLast {
             stmt = connection.prepareStatement("UPDATE ContactsList SET isDeleted = 0 WHERE id = " + id + ";");
             return stmt.execute();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+
             return false;
         }
     }

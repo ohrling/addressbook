@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class MainGui extends Application {
-    private static final Locale locale = new Locale("sv","SE");
+    private static final Locale locale = new Locale("sv", "SE");
     static final ResourceBundle bundle = ResourceBundle.getBundle("fxml.Bundle", locale); // För att kunna använda olika språk i applikationen
 
     public static void main(String[] args) {

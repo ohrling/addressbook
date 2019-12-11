@@ -23,13 +23,20 @@ import static core.singletons.ObjectPasser.contact;
 
 // Ritar upp och behandlar data för att uppdatera eller skapa en ny kontakt
 public class DialogController implements Initializable {
-    @FXML private Button doneBtn;
-    @FXML private Button cancelBtn;
-    @FXML private TextField firstName;
-    @FXML private TextField lastName;
-    @FXML private TextField email;
-    @FXML private TextField phoneNumber;
-    @FXML private TextField company;
+    @FXML
+    private Button doneBtn;
+    @FXML
+    private Button cancelBtn;
+    @FXML
+    private TextField firstName;
+    @FXML
+    private TextField lastName;
+    @FXML
+    private TextField email;
+    @FXML
+    private TextField phoneNumber;
+    @FXML
+    private TextField company;
 
     private final static String errorCSSStyle = "-fx-border-color: red; ";
     private final static String defaultCSSStyle = "-fx-border-width: 0px ;";
@@ -40,7 +47,7 @@ public class DialogController implements Initializable {
     private Map<String, String> fields = new HashMap<>();
 
     private void checkToEnableDoneButton() {
-        if(validFirstName && validPhoneNumber && validEmail)
+        if (validFirstName && validPhoneNumber && validEmail)
             doneBtn.setDisable(doneBtnEnabled);
         else
             doneBtn.setDisable(!doneBtnEnabled);
@@ -65,7 +72,7 @@ public class DialogController implements Initializable {
                     if ((tf.getText().length() == 0) || EmailValidator.getInstance().isValid(tf.getText())) {
                         tf.setStyle(defaultCSSStyle);
                         validEmail = true;
-                    } else if (! EmailValidator.getInstance().isValid(tf.getText())) {
+                    } else if (!EmailValidator.getInstance().isValid(tf.getText())) {
                         tf.setStyle(errorCSSStyle);
                         validEmail = false;
                     }
@@ -134,9 +141,8 @@ public class DialogController implements Initializable {
             TextField[] temp = new TextField[]{firstName, lastName, email, phoneNumber, company};
             for (TextField field :
                     temp) {
-                    fields.put(field.getId(), field.getText());
+                fields.put(field.getId(), field.getText());
             }
-            System.out.println(fields.toString());
             SQLUpdate update = new SQLUpdate();
             update.update(fields);
             update.closeCon();

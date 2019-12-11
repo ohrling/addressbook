@@ -10,23 +10,23 @@ import java.util.Map;
 public class SQLUpdate extends SQLPerformer implements Update {
 
     @Override
-    public void update(Map<String,String> searchValues) {
+    public void update(Map<String, String> searchValues) {
         System.out.println(searchValues);
         StringBuilder updateCall = new StringBuilder("UPDATE ContactsList SET ");
         int id = Integer.parseInt(searchValues.get("id"));
         List<String> keys = new ArrayList<>();
         for (Map.Entry<String, String> entry :
                 searchValues.entrySet()) {
-            if(!entry.getKey().equals("id"))
+            if (!entry.getKey().equals("id"))
                 keys.add(entry.getKey());
         }
-        if(keys.size() == 1) {
+        if (keys.size() == 1) {
             updateCall.append(keys.get(0));
         } else {
             for (String key :
-                keys) {
+                    keys) {
                 updateCall.append(key);
-                if(keys.indexOf(key) < keys.size() - 1) {
+                if (keys.indexOf(key) < keys.size() - 1) {
                     updateCall.append(" = ?").append(" , ");
                 } else {
                     updateCall.append(" = ?");
@@ -38,7 +38,7 @@ public class SQLUpdate extends SQLPerformer implements Update {
             stmt = connection.prepareStatement(updateCall.toString());
             for (String key :
                     keys) {
-                if(key.equals("isDeleted"))
+                if (key.equals("isDeleted"))
                     stmt.setInt((keys.indexOf(key) + 1), Integer.parseInt(searchValues.get(key)));
                 else
                     stmt.setString((keys.indexOf(key) + 1), searchValues.get(key));
@@ -47,7 +47,7 @@ public class SQLUpdate extends SQLPerformer implements Update {
             stmt.execute();
         } catch (SQLException e) {
             System.out.println("Kunde inte updatera kontakten i databasen.");
-            System.out.println(e.getMessage());
+
         }
     }
 }
