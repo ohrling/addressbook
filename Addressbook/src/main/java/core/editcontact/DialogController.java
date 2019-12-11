@@ -9,7 +9,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -35,8 +34,17 @@ public class DialogController implements Initializable {
     private final static String errorCSSStyle = "-fx-border-color: red; ";
     private final static String defaultCSSStyle = "-fx-border-width: 0px ;";
     private static final int FIRST_NAME = 1, LAST_NAME = 2, EMAIL = 3, PHONE_NUMBER = 4;
+    private static final boolean doneBtnEnabled = false;
+    private static boolean validFirstName = false, validPhoneNumber = false, validEmail = false;
 
     private Map<String, String> fields = new HashMap<>();
+
+    private void checkToEnableDoneButton() {
+        if(validFirstName && validPhoneNumber && validEmail)
+            doneBtn.setDisable(doneBtnEnabled);
+        else
+            doneBtn.setDisable(!doneBtnEnabled);
+    }
 
     private void focusState(TextField tf, boolean isFocused, int field) {
         if (isFocused) {
@@ -46,24 +54,30 @@ public class DialogController implements Initializable {
                 case FIRST_NAME:
                     if ((tf.getText().length() > 0)) {
                         tf.setStyle(defaultCSSStyle);
+                        validFirstName = true;
                     } else {
                         //Alla kontakter måste ha ett förnamn
                         tf.setStyle(errorCSSStyle);
+                        validFirstName = false;
                     }
                     break;
                 case LAST_NAME:
                     //Alla kontakter måste inte ha ett efternamn
+                    //Lämnar kvar detta för framtida möjligheter
                     break;
                 case EMAIL:
                     if ((tf.getText().length() == 0) || EmailValidator.getInstance().isValid(tf.getText())) {
                         tf.setStyle(defaultCSSStyle);
+                        validEmail = true;
                     } else if (! EmailValidator.getInstance().isValid(tf.getText())) {
                         tf.setStyle(errorCSSStyle);
+                        validEmail = false;
                     }
                     break;
                 case PHONE_NUMBER:
                     if (tf.getText().length() == 0) {
                         tf.setStyle(defaultCSSStyle);
+                        validPhoneNumber = true;
                     } else {
                         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
                         Phonenumber.PhoneNumber enteredNumber = null;
@@ -71,10 +85,12 @@ public class DialogController implements Initializable {
                             enteredNumber = phoneUtil.parse(tf.getText(), PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL.toString());
                         } catch (NumberParseException e) {
                             tf.setStyle(errorCSSStyle);
+                            validPhoneNumber = false;
                             break;
                         } finally {
-                            if(phoneUtil.isPossibleNumber(enteredNumber)) {
+                            if (enteredNumber != null && phoneUtil.isPossibleNumber(enteredNumber)) {
                                 tf.setStyle(defaultCSSStyle);
+                                validPhoneNumber = true;
                             }
                         }
                     }
@@ -86,6 +102,7 @@ public class DialogController implements Initializable {
         Stage stage = (Stage) tf.getScene().getWindow();
         stage.setScene(tf.getScene());
         stage.show();
+        checkToEnableDoneButton();
     }
 
     @Override
@@ -134,9 +151,7 @@ public class DialogController implements Initializable {
             update.closeCon();
         } else {
             if (firstName.getText().isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setContentText("Kontakten måste åtminstone ha ett förnamn");
-                alert.show();
+
             } else {
                 fields.put("firstName", firstName.getText());
                 fields.put("lastName", lastName.getText());
