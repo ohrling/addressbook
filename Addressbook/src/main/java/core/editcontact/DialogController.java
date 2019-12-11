@@ -61,10 +61,6 @@ public class DialogController implements Initializable {
                         validFirstName = false;
                     }
                     break;
-                case LAST_NAME:
-                    //Alla kontakter måste inte ha ett efternamn
-                    //Lämnar kvar detta för framtida möjligheter
-                    break;
                 case EMAIL:
                     if ((tf.getText().length() == 0) || EmailValidator.getInstance().isValid(tf.getText())) {
                         tf.setStyle(defaultCSSStyle);
@@ -82,7 +78,7 @@ public class DialogController implements Initializable {
                         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
                         Phonenumber.PhoneNumber enteredNumber = null;
                         try {
-                            enteredNumber = phoneUtil.parse(tf.getText(), PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL.toString());
+                            enteredNumber = phoneUtil.parse(tf.getText(), "SE");
                         } catch (NumberParseException e) {
                             tf.setStyle(errorCSSStyle);
                             validPhoneNumber = false;

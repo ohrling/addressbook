@@ -125,7 +125,7 @@ public class GuiController implements Initializable {
             String firstName = faker.name().firstName();
             String lastName = faker.name().lastName();
             String email = faker.internet().emailAddress();
-            String phoneNumber = faker.phoneNumber().phoneNumber();
+            String phoneNumber = faker.phoneNumber().phoneNumber().replaceAll("[^0-9]", "");
             String company = faker.company().name();
 
             creator.create(firstName, lastName, email, phoneNumber, company);
